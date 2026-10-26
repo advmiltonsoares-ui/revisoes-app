@@ -16,7 +16,7 @@ export class ErroAcesso extends Error {}
 
 /**
  * Descobre quem está chamando: o dono do app (e-mail em DONO_EMAILS, já verificado) usa o Claude;
- * as demais pessoas logadas usam o Gemini grátis. Ninguém além do dono usa o Claude.
+ * as demais pessoas logadas usam o Gemini grátis.
  */
 export async function verificarAcesso(cabecalho: string | null): Promise<Acesso> {
   const projeto = process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID;
@@ -45,7 +45,5 @@ export async function verificarAcesso(cabecalho: string | null): Promise<Acesso>
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
   const dono = payload.email_verified === true && donos.includes(email);
-  // Sem a chave da Anthropic cadastrada, o dono também usa o Gemini até ela ser configurada.
-  const claude = dono && Boolean(process.env.ANTHROPIC_API_KEY);
-  return { provedor: claude ? 'claude' : 'gemini', uid: payload.sub ?? null };
+  return { provedor: dono ? 'claude' : 'gemini', uid: payload.sub ?? null };
 }
