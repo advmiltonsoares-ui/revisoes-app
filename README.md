@@ -20,6 +20,14 @@ App de estudos para instalar no celular ou no computador. Ele abre pelo navegado
   - **Simulado** de múltipla escolha com correção. As questões erradas podem virar cartões.
 - **Quem usa qual IA**: os e-mails em `DONO_EMAILS`, desde que verificados, usam o **Claude** (pago, da Anthropic). Todas as outras pessoas logadas usam o **Gemini** (grátis, do Google). As chaves ficam só no servidor (`api/ia.ts`), nunca no celular.
 
+## Etapa 3: Slides com IA
+
+- Você digita o tema, escolhe a quantidade de slides (5 a 15) e o estilo (Clássico, Escuro, Verde ou Azul). Se quiser, usa um texto ou PDF como base.
+- A IA monta slides de capa, tópicos, duas colunas, destaque e citação, cada um com **anotações do apresentador**.
+- No app você passa os slides, troca o estilo e usa o botão **Apresentar**, que abre em tela cheia. Toque na direita para avançar e na esquerda para voltar, ou use as setas do teclado.
+- **Baixar PDF**: gera um PDF 16:9 com texto de verdade, nítido e pesquisável (`src/slidesPdf.ts`).
+- As apresentações ficam salvas na conta, junto com as revisões.
+
 ### Chaves da IA
 
 1. **Anthropic (sua)**: em https://console.anthropic.com crie uma chave em *API Keys*. Em *Billing*, coloque crédito e um limite mensal de gasto.

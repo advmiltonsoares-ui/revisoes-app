@@ -1,6 +1,6 @@
 // Instruções e formatos de resposta de cada tarefa da IA (iguais para Claude e Gemini).
 
-export type Tarefa = 'chat' | 'resumo' | 'cartoes' | 'simulado';
+export type Tarefa = 'chat' | 'resumo' | 'cartoes' | 'simulado' | 'slides';
 
 export interface MensagemChat {
   papel: 'usuario' | 'ia';
@@ -13,6 +13,7 @@ export interface Esquema {
   properties?: Record<string, Esquema>;
   required?: string[];
   items?: Esquema;
+  enum?: string[];
   description?: string;
 }
 
@@ -31,7 +32,7 @@ export const LIMITE_TEXTO = 200_000;
 
 interface DefinicaoTarefa {
   sistema: string;
-  pedido(texto: string, quantidade: number): string;
+  pedido(texto: string, quantidade: number, tema: string): string;
   esquema: Esquema;
 }
 
@@ -109,6 +110,50 @@ export const TAREFAS: Record<Exclude<Tarefa, 'chat'>, DefinicaoTarefa> = {
         },
       },
       required: ['titulo', 'questoes'],
+    },
+  },
+  slides: {
+    sistema:
+      BASE +
+      ' Você monta apresentações de slides claras e bonitas para estudar ou apresentar. ' +
+      'Cada slide tem pouco texto: no máximo 5 tópicos curtos (até ~12 palavras cada), sem parágrafos longos. ' +
+      'Use apenas texto simples nos campos, sem Markdown e sem emojis.',
+    pedido: (texto, n, tema) =>
+      `Crie uma apresentação de ${n} slides sobre: ${tema}.\n\n` +
+      'Regras de layout (campo "layout"):\n' +
+      '- O 1º slide é "capa" (titulo + subtitulo).\n' +
+      '- Use principalmente "topicos" (titulo + topicos).\n' +
+      '- Use "duas_colunas" para comparações (rotuloEsquerda/esquerda e rotuloDireita/direita).\n' +
+      '- Use "destaque" para um número, prazo ou frase-chave (titulo + texto curto).\n' +
+      '- Use "citacao" para um artigo de lei ou frase importante (texto + subtitulo com a fonte).\n' +
+      '- O último slide é "topicos" com o título "Resumo" ou "Para lembrar".\n' +
+      'Em todos os slides, preencha "notas" com 2 a 4 frases que o apresentador pode falar.' +
+      (texto ? '\n\nBaseie-se no material abaixo:\n<material>\n' + texto + '\n</material>' : ''),
+    esquema: {
+      type: 'object',
+      properties: {
+        titulo: { type: 'string', description: 'Título da apresentação' },
+        slides: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              layout: { type: 'string', enum: ['capa', 'topicos', 'duas_colunas', 'destaque', 'citacao'] },
+              titulo: { type: 'string' },
+              subtitulo: { type: 'string' },
+              topicos: { type: 'array', items: { type: 'string' } },
+              texto: { type: 'string' },
+              rotuloEsquerda: { type: 'string' },
+              esquerda: { type: 'array', items: { type: 'string' } },
+              rotuloDireita: { type: 'string' },
+              direita: { type: 'array', items: { type: 'string' } },
+              notas: { type: 'string' },
+            },
+            required: ['layout', 'titulo', 'notas'],
+          },
+        },
+      },
+      required: ['titulo', 'slides'],
     },
   },
 };

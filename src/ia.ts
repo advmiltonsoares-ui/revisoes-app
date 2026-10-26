@@ -26,6 +26,24 @@ export interface Simulado {
   questoes: Questao[];
 }
 
+export type LayoutSlide = 'capa' | 'topicos' | 'duas_colunas' | 'destaque' | 'citacao';
+export interface Slide {
+  layout: LayoutSlide;
+  titulo: string;
+  subtitulo?: string;
+  topicos?: string[];
+  texto?: string;
+  rotuloEsquerda?: string;
+  esquerda?: string[];
+  rotuloDireita?: string;
+  direita?: string[];
+  notas: string;
+}
+export interface SlidesGerados {
+  titulo: string;
+  slides: Slide[];
+}
+
 export const LIMITE_TEXTO = 200_000;
 
 async function chamar(corpo: unknown, sinal?: AbortSignal): Promise<Response> {
@@ -50,7 +68,7 @@ async function chamar(corpo: unknown, sinal?: AbortSignal): Promise<Response> {
 export async function conversar(
   mensagens: MensagemChat[],
   aoReceber: (textoAteAgora: string) => void,
-  sinal?: AbortSignal
+  sinal?: AbortSignal,
 ): Promise<{ texto: string; provedor: Provedor }> {
   const res = await chamar({ tarefa: 'chat', mensagens }, sinal);
   const provedor = (res.headers.get('X-IA-Provedor') as Provedor) ?? 'gemini';
@@ -70,5 +88,10 @@ export async function gerar(tarefa: 'cartoes', texto: string, quantidade: number
 export async function gerar(tarefa: 'simulado', texto: string, quantidade: number): Promise<Simulado>;
 export async function gerar(tarefa: string, texto: string, quantidade?: number): Promise<unknown> {
   const res = await chamar({ tarefa, texto, quantidade });
+  return res.json();
+}
+
+export async function gerarSlides(tema: string, quantidade: number, texto: string): Promise<SlidesGerados> {
+  const res = await chamar({ tarefa: 'slides', tema, quantidade, texto });
   return res.json();
 }

@@ -8,6 +8,7 @@ interface Pedido {
   mensagens?: MensagemChat[];
   texto?: string;
   quantidade?: number;
+  tema?: string;
 }
 
 const json = (corpo: unknown, status = 200, extra: Record<string, string> = {}) =>
@@ -63,14 +64,20 @@ export async function POST(req: Request): Promise<Response> {
       return new Response(corpo, { headers: { 'Content-Type': 'text/plain; charset=utf-8', ...cab } });
     }
 
-    if (p.tarefa === 'resumo' || p.tarefa === 'cartoes' || p.tarefa === 'simulado') {
+    if (p.tarefa === 'resumo' || p.tarefa === 'cartoes' || p.tarefa === 'simulado' || p.tarefa === 'slides') {
       const texto = (p.texto ?? '').trim();
-      if (texto.length < 30) return json({ erro: 'Cole um texto maior (pelo menos algumas frases).' }, 400);
+      const tema = (p.tema ?? '').trim().slice(0, 300);
+      if (p.tarefa === 'slides') {
+        if (tema.length < 3) return json({ erro: 'Digite o tema da apresentação.' }, 400);
+      } else if (texto.length < 30) return json({ erro: 'Cole um texto maior (pelo menos algumas frases).' }, 400);
       if (texto.length > LIMITE_TEXTO)
-        return json({ erro: `Texto grande demais (máx. ${LIMITE_TEXTO.toLocaleString('pt-BR')} caracteres). Divida em partes.` }, 413);
-      const n = Math.min(30, Math.max(3, Math.round(p.quantidade ?? 10)));
+        return json(
+          { erro: `Texto grande demais (máx. ${LIMITE_TEXTO.toLocaleString('pt-BR')} caracteres). Divida em partes.` },
+          413,
+        );
+      const n = Math.min(p.tarefa === 'slides' ? 20 : 30, Math.max(3, Math.round(p.quantidade ?? 10)));
       const t = TAREFAS[p.tarefa];
-      const resultado = await gerarJson(acesso.provedor, t.sistema, t.pedido(texto, n), t.esquema);
+      const resultado = await gerarJson(acesso.provedor, t.sistema, t.pedido(texto, n, tema), t.esquema);
       return json(resultado, 200, cab);
     }
 

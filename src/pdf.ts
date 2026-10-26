@@ -10,5 +10,8 @@ export async function textoDoPdf(arquivo: File): Promise<string> {
     const conteudo = await pagina.getTextContent();
     paginas.push(conteudo.items.map((it) => ('str' in it ? it.str + (it.hasEOL ? '\n' : ' ') : '')).join(''));
   }
-  return paginas.join('\n\n').replace(/[ \t]+\n/g, '\n').trim();
+  return paginas
+    .join('\n\n')
+    .replace(/[ \t]+\n/g, '\n')
+    .trim();
 }

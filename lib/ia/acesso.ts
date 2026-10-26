@@ -9,7 +9,7 @@ export interface Acesso {
 
 // Chaves públicas do Firebase Auth para conferir o token de login.
 const JWKS = createRemoteJWKSet(
-  new URL('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com')
+  new URL('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com'),
 );
 
 export class ErroAcesso extends Error {}

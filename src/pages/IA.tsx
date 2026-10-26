@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../auth';
-import { Icone, type NomeIcone } from '../components/Icone';
+import { Icone } from '../components/Icone';
 import { Markdown } from '../components/Markdown';
 import {
   LIMITE_TEXTO,
@@ -14,6 +14,7 @@ import {
 } from '../ia';
 import { textoDoPdf } from '../pdf';
 import { criarCartoes, criarMateria, useDados } from '../store';
+import { Slides } from './Slides';
 
 type Secao = 'chat' | 'criar' | 'slides';
 
@@ -67,14 +68,7 @@ export function IA() {
         />
       )}
       {secao === 'criar' && <Criar textoInicial={textoCriar} />}
-      {secao === 'slides' && (
-        <EmBreve
-          icone="slides"
-          titulo="Digite o tema e a IA monta a apresentação."
-          itens={['Veja os slides no app', 'Baixe em PDF']}
-          etapa="Etapa 3"
-        />
-      )}
+      {secao === 'slides' && <Slides />}
     </div>
   );
 }
@@ -131,7 +125,7 @@ function Chat({ aoProvedor, criarDisto }: { aoProvedor(p: Provedor): void; criar
       const r = await conversar(
         historico,
         (parcial) => setMensagens([...historico, { papel: 'ia', texto: parcial }]),
-        abortar.current.signal
+        abortar.current.signal,
       );
       aoProvedor(r.provedor);
     } catch (e) {
@@ -393,7 +387,13 @@ function ResultadoResumo({ dados, voltar, virarCartoes }: { dados: Resumo; volta
   );
 }
 
-function EscolherMateria({ sugestao, onChange }: { sugestao: string; onChange(v: { id?: string; nome: string }): void }) {
+function EscolherMateria({
+  sugestao,
+  onChange,
+}: {
+  sugestao: string;
+  onChange(v: { id?: string; nome: string }): void;
+}) {
   const { materias } = useDados();
   const [escolha, setEscolha] = useState<string>('nova');
   const [nome, setNome] = useState(sugestao);
@@ -413,7 +413,9 @@ function EscolherMateria({ sugestao, onChange }: { sugestao: string; onChange(v:
           ))}
         </select>
       </label>
-      {escolha === 'nova' && <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome da matéria" />}
+      {escolha === 'nova' && (
+        <input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome da matéria" />
+      )}
     </div>
   );
 }
@@ -453,7 +455,10 @@ function ResultadoCartoes({ dados, voltar }: { dados: CartoesGerados; voltar(): 
       <ul className="lista">
         {dados.cartoes.map((c, i) => (
           <li key={i}>
-            <label className={`cartao linha opcao ${marcados[i] ? 'marcada' : ''}`} style={{ alignItems: 'flex-start' }}>
+            <label
+              className={`cartao linha opcao ${marcados[i] ? 'marcada' : ''}`}
+              style={{ alignItems: 'flex-start' }}
+            >
               <input
                 type="checkbox"
                 checked={marcados[i]}
@@ -566,7 +571,7 @@ function ResultadoSimulado({ dados, voltar }: { dados: Simulado; voltar(): void 
                     erradas.map((q) => ({
                       pergunta: q.enunciado,
                       resposta: `${q.alternativas[q.correta]}\n\n${q.explicacao}`,
-                    }))
+                    })),
                   );
                   setSalvo(true);
                 }}
@@ -578,22 +583,5 @@ function ResultadoSimulado({ dados, voltar }: { dados: Simulado; voltar(): void 
         </div>
       )}
     </div>
-  );
-}
-
-// ------------------------------------------------------------------------------------ Em breve
-
-function EmBreve({ icone, titulo, itens, etapa }: { icone: NomeIcone; titulo: string; itens: string[]; etapa: string }) {
-  return (
-    <section className="cartao pilha em-breve">
-      <Icone nome={icone} tamanho={36} />
-      <h2>{titulo}</h2>
-      <ul className="marcadores">
-        {itens.map((i) => (
-          <li key={i}>{i}</li>
-        ))}
-      </ul>
-      <span className="selo">Em construção · {etapa}</span>
-    </section>
   );
 }

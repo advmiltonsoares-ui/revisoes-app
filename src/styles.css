@@ -851,3 +851,232 @@ select {
 .explicacao.nao strong {
   color: var(--errei);
 }
+
+/* ---------- slides ---------- */
+.slide-caixa {
+  container-type: inline-size;
+  width: 100%;
+}
+.slide {
+  --u: calc(100cqw / 960);
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--s-fundo);
+  color: var(--s-texto);
+  padding: calc(72 * var(--u));
+  border-radius: calc(14 * var(--u));
+  box-shadow: 0 0 0 1px var(--borda);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-size: calc(24 * var(--u));
+  line-height: 1.25;
+  text-align: left;
+}
+.slide h2,
+.slide h3,
+.slide h4,
+.slide p,
+.slide ul {
+  margin: 0;
+}
+.slide h3 {
+  font-size: calc(36 * var(--u));
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.slide h4 {
+  font-size: calc(22 * var(--u));
+  margin-bottom: calc(14 * var(--u));
+}
+.s-barra {
+  display: block;
+  width: calc(64 * var(--u));
+  height: calc(5 * var(--u));
+  background: var(--s-destaque);
+  margin: calc(18 * var(--u)) 0 calc(26 * var(--u));
+  flex-shrink: 0;
+}
+.slide ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+}
+.slide li {
+  position: relative;
+  padding-left: calc(28 * var(--u));
+}
+.slide li::before {
+  content: '';
+  position: absolute;
+  left: calc(2 * var(--u));
+  top: 0.45em;
+  width: 0.34em;
+  height: 0.34em;
+  border-radius: 50%;
+  background: var(--s-destaque);
+}
+.s-capa {
+  margin: auto 0;
+}
+.s-capa .s-barra {
+  width: calc(80 * var(--u));
+  height: calc(6 * var(--u));
+  margin-top: 0;
+}
+.s-capa h2 {
+  font-size: calc(54 * var(--u));
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.s-capa p {
+  margin-top: calc(24 * var(--u));
+  color: var(--s-suave);
+}
+.s-colunas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(48 * var(--u));
+  font-size: calc(20 * var(--u));
+}
+.s-destaque {
+  margin: auto 0;
+  text-align: center;
+}
+.s-rotulo {
+  font-size: calc(18 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--s-suave);
+}
+.s-grande {
+  font-size: calc(72 * var(--u));
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--s-destaque);
+  margin: calc(24 * var(--u)) 0 !important;
+}
+.s-citacao {
+  margin: auto 0;
+}
+.s-aspas {
+  display: block;
+  font-size: calc(120 * var(--u));
+  line-height: 0.6;
+  font-weight: 800;
+  color: var(--s-destaque);
+}
+.s-frase {
+  font-size: calc(32 * var(--u));
+  font-style: italic;
+  margin-top: calc(24 * var(--u)) !important;
+}
+.s-fonte {
+  margin-top: calc(24 * var(--u)) !important;
+  color: var(--s-suave);
+  font-size: calc(20 * var(--u));
+}
+.s-numero {
+  position: absolute;
+  right: calc(40 * var(--u));
+  bottom: calc(20 * var(--u));
+  font-size: calc(12 * var(--u));
+  color: var(--s-suave);
+}
+
+.miniatura {
+  width: 112px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+.tira {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scroll-snap-type: x proximity;
+}
+.tira button {
+  width: 104px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  scroll-snap-align: start;
+}
+.tira button.ativo {
+  outline-color: var(--destaque);
+}
+.tira .slide-caixa {
+  pointer-events: none;
+}
+.girar svg {
+  transform: rotate(180deg);
+}
+.visuais {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.visuais button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--suave);
+  padding: 6px 0;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+}
+.visuais button.ativo {
+  border-color: var(--destaque);
+  color: var(--texto);
+}
+.amostra {
+  width: 48px;
+  height: 27px;
+  border-radius: 5px;
+  border: 1px solid;
+  display: flex;
+  align-items: flex-end;
+  padding: 4px;
+}
+.amostra i {
+  width: 14px;
+  height: 3px;
+}
+
+.apresentacao {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #000;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.apresentacao-slide {
+  width: min(100vw, 100dvh * 16 / 9);
+}
+.apresentacao .slide {
+  border-radius: 0;
+  box-shadow: none;
+}
+.fechar-apresentacao {
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top));
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 18px;
+}

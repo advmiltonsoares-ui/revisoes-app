@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from './firebase';
+import type { Slide } from './ia';
 import { hoje, responder, type EstadoRevisao, type Resposta } from './srs';
 
 export interface Materia {
@@ -18,15 +19,26 @@ export interface Cartao extends EstadoRevisao {
   revisoes: number;
 }
 
+export type VisualSlides = 'classico' | 'escuro' | 'verde' | 'azul';
+
+export interface Apresentacao {
+  id: string;
+  titulo: string;
+  visual: VisualSlides;
+  slides: Slide[];
+  criadaEm: number;
+}
+
 export interface Dados {
   materias: Materia[];
   cartoes: Cartao[];
+  apresentacoes: Apresentacao[];
   /** Dias (AAAA-MM-DD) em que a pessoa revisou algo — usado na sequência de estudo. */
   diasEstudados: string[];
   atualizadoEm: number;
 }
 
-const vazio = (): Dados => ({ materias: [], cartoes: [], diasEstudados: [], atualizadoEm: 0 });
+const vazio = (): Dados => ({ materias: [], cartoes: [], apresentacoes: [], diasEstudados: [], atualizadoEm: 0 });
 
 let dados: Dados = vazio();
 let usuarioId: string | null = null;
@@ -165,6 +177,20 @@ export function editarCartao(id: string, pergunta: string, resposta: string) {
 
 export function excluirCartao(id: string) {
   gravar({ ...dados, cartoes: dados.cartoes.filter((c) => c.id !== id) });
+}
+
+export function salvarApresentacao(titulo: string, slides: Slide[], visual: VisualSlides): Apresentacao {
+  const a: Apresentacao = { id: novoId(), titulo, slides, visual, criadaEm: Date.now() };
+  gravar({ ...dados, apresentacoes: [a, ...dados.apresentacoes] });
+  return a;
+}
+
+export function mudarVisual(id: string, visual: VisualSlides) {
+  gravar({ ...dados, apresentacoes: dados.apresentacoes.map((a) => (a.id === id ? { ...a, visual } : a)) });
+}
+
+export function excluirApresentacao(id: string) {
+  gravar({ ...dados, apresentacoes: dados.apresentacoes.filter((a) => a.id !== id) });
 }
 
 export function registrarResposta(id: string, r: Resposta) {

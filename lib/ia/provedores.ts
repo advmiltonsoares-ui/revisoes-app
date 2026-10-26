@@ -4,7 +4,7 @@ import type { Esquema, MensagemChat } from './tarefas';
 export class ErroIA extends Error {
   constructor(
     mensagem: string,
-    public status = 502
+    public status = 502,
   ) {
     super(mensagem);
   }
@@ -22,7 +22,8 @@ function claude(): Anthropic {
 
 function erroClaude(e: unknown): ErroIA {
   if (e instanceof ErroIA) return e;
-  if (e instanceof Anthropic.RateLimitError) return new ErroIA('Muitos pedidos seguidos. Espere um pouco e tente de novo.', 429);
+  if (e instanceof Anthropic.RateLimitError)
+    return new ErroIA('Muitos pedidos seguidos. Espere um pouco e tente de novo.', 429);
   if (e instanceof Anthropic.AuthenticationError) return new ErroIA('A chave da Anthropic é inválida.', 500);
   if (e instanceof Anthropic.APIError) return new ErroIA(`Erro na IA (${e.status ?? 'rede'}). Tente de novo.`, 502);
   return new ErroIA('Não foi possível falar com a IA. Tente de novo.', 502);
@@ -76,7 +77,8 @@ async function jsonClaude(sistema: string, pedido: string, esquema: Esquema): Pr
     });
     const final = await stream.finalMessage();
     if (final.stop_reason === 'refusal') throw new ErroIA('A IA não aceitou esse material.', 422);
-    if (final.stop_reason === 'max_tokens') throw new ErroIA('O material é grande demais para uma vez só. Divida em partes.', 422);
+    if (final.stop_reason === 'max_tokens')
+      throw new ErroIA('O material é grande demais para uma vez só. Divida em partes.', 422);
     const texto = final.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('');
     return JSON.parse(texto);
   } catch (e) {
@@ -94,6 +96,10 @@ const URL_GEMINI = 'https://generativelanguage.googleapis.com/v1beta/models';
 function esquemaGemini(e: Esquema): Record<string, unknown> {
   const r: Record<string, unknown> = { type: e.type.toUpperCase() };
   if (e.description) r.description = e.description;
+  if (e.enum) {
+    r.enum = e.enum;
+    r.format = 'enum';
+  }
   if (e.required) r.required = e.required;
   if (e.properties) {
     r.properties = Object.fromEntries(Object.entries(e.properties).map(([k, v]) => [k, esquemaGemini(v)]));
