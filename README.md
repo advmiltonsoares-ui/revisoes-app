@@ -18,7 +18,7 @@ App de estudos para instalar no celular ou no computador. Ele abre pelo navegado
   - **Cartões**, que você revisa, desmarca o que não quiser e salva numa matéria;
   - **Resumo**;
   - **Simulado** de múltipla escolha com correção. As questões erradas podem virar cartões.
-- **Quem usa qual IA**: os e-mails em `DONO_EMAILS`, desde que verificados, usam o **Claude** (pago, da Anthropic). Todas as outras pessoas logadas usam o **Gemini** (grátis, do Google). As chaves ficam só no servidor (`api/ia.ts`), nunca no celular.
+- **Quem usa qual IA**: os e-mails em `DONO_EMAILS`, desde que verificados, usam o **Claude** (pago, da Anthropic). Todas as outras pessoas logadas usam o **Gemini** (grátis, do Google). As chaves ficam só no servidor (`api/ia.ts`), nunca no celular. Enquanto a chave da Anthropic não for cadastrada, o dono também usa o Gemini.
 
 ## Etapa 3: Slides com IA
 
