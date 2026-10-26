@@ -138,6 +138,22 @@ export function criarCartao(materiaId: string, pergunta: string, resposta: strin
   gravar({ ...dados, cartoes: [...dados.cartoes, c] });
 }
 
+/** Adiciona vários cartões de uma vez (ex.: criados pela IA). */
+export function criarCartoes(materiaId: string, lista: { pergunta: string; resposta: string }[]) {
+  const agora = Date.now();
+  const novos: Cartao[] = lista.map((x, i) => ({
+    id: novoId(),
+    materiaId,
+    pergunta: x.pergunta.trim(),
+    resposta: x.resposta.trim(),
+    criadoEm: agora + i,
+    revisoes: 0,
+    etapa: 0,
+    vence: hoje(),
+  }));
+  gravar({ ...dados, cartoes: [...dados.cartoes, ...novos] });
+}
+
 export function editarCartao(id: string, pergunta: string, resposta: string) {
   gravar({
     ...dados,

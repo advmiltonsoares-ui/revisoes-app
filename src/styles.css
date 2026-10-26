@@ -642,3 +642,212 @@ details summary {
 [hidden] {
   display: none !important;
 }
+
+/* ---------- chat ---------- */
+select {
+  font: inherit;
+  color: inherit;
+  background: var(--fundo);
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.chat {
+  gap: 12px;
+}
+.sugestao {
+  font-weight: 500;
+}
+.mensagens {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.balao {
+  max-width: 92%;
+  padding: 12px 14px;
+  border-radius: 18px;
+}
+.balao.usuario {
+  align-self: flex-end;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  border-bottom-right-radius: 6px;
+}
+.balao.ia {
+  align-self: flex-start;
+  background: var(--superficie);
+  border-bottom-left-radius: 6px;
+}
+.acoes-balao {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+.acoes-balao .link {
+  font-size: 13px;
+}
+.digitando {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px 0;
+}
+.digitando i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--suave);
+  animation: pulo 1s infinite ease-in-out;
+}
+.digitando i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.digitando i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes pulo {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+.caixa-chat {
+  position: sticky;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 0;
+  background: var(--fundo);
+}
+.caixa-chat textarea {
+  resize: none;
+  max-height: 160px;
+  field-sizing: content;
+  border-radius: 22px;
+}
+.caixa-chat .botao {
+  border-radius: 50%;
+}
+
+.markdown > :first-child {
+  margin-top: 0;
+}
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+.markdown p,
+.markdown ul,
+.markdown ol {
+  margin: 0 0 10px;
+}
+.markdown ul,
+.markdown ol {
+  padding-left: 22px;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3 {
+  font-size: 17px;
+  margin: 16px 0 8px;
+}
+.markdown code {
+  background: var(--superficie-2);
+  padding: 1px 5px;
+  border-radius: 5px;
+  font-size: 0.92em;
+}
+.markdown blockquote {
+  margin: 0 0 10px;
+  padding-left: 12px;
+  border-left: 3px solid var(--borda);
+  color: var(--suave);
+}
+.markdown table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  margin-bottom: 10px;
+}
+.markdown th,
+.markdown td {
+  border: 1px solid var(--borda);
+  padding: 6px 8px;
+}
+
+/* ---------- criar ---------- */
+.opcao {
+  cursor: pointer;
+  border: 1.5px solid transparent;
+}
+.opcao.marcada {
+  border-color: var(--destaque);
+}
+.opcao input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  accent-color: var(--destaque);
+}
+.barra-carregando {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--destaque), transparent);
+  background-size: 200% 100%;
+  animation: carregar 1.2s linear infinite;
+}
+@keyframes carregar {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+.alternativa {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--borda);
+  background: var(--fundo);
+}
+.alternativa:disabled {
+  opacity: 1;
+  cursor: default;
+}
+.alternativa b {
+  flex-shrink: 0;
+  width: 22px;
+}
+.alternativa.certa {
+  border-color: var(--acertei);
+  background: color-mix(in srgb, var(--acertei) 14%, var(--fundo));
+}
+.alternativa.errada {
+  border-color: var(--errei);
+  background: color-mix(in srgb, var(--errei) 14%, var(--fundo));
+}
+.alternativa.apagada {
+  opacity: 0.55;
+}
+.explicacao {
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--superficie-2);
+}
+.explicacao.ok strong {
+  color: var(--acertei);
+}
+.explicacao.nao strong {
+  color: var(--errei);
+}

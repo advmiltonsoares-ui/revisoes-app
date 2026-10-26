@@ -11,6 +11,22 @@ App de estudos para instalar no celular ou no computador. Ele abre pelo navegado
 - **Perfil**: nome, tema claro/escuro/automático, instalar o app e sair.
 - **IA**: telas reservadas para o Chat, o Criar (Etapa 2) e os Slides (Etapa 3).
 
+## Etapa 2: IA
+
+- **Chat**: conversa com a IA, que também toma a sua lição. A resposta aparece enquanto a IA escreve e a conversa fica salva no aparelho. Cada resposta tem o botão "Criar cartões disto".
+- **Criar**: cole um texto ou envie um PDF. O texto do PDF é lido no próprio aparelho. A IA gera:
+  - **Cartões**, que você revisa, desmarca o que não quiser e salva numa matéria;
+  - **Resumo**;
+  - **Simulado** de múltipla escolha com correção. As questões erradas podem virar cartões.
+- **Quem usa qual IA**: os e-mails em `DONO_EMAILS`, desde que verificados, usam o **Claude** (pago, da Anthropic). Todas as outras pessoas logadas usam o **Gemini** (grátis, do Google). As chaves ficam só no servidor (`api/ia.ts`), nunca no celular.
+
+### Chaves da IA
+
+1. **Anthropic (sua)**: em https://console.anthropic.com crie uma chave em *API Keys*. Em *Billing*, coloque crédito e um limite mensal de gasto.
+2. **Gemini (grátis)**: em https://aistudio.google.com clique em *Get API key*. O plano grátis tem limite de pedidos por dia, que é dividido entre todos que usam o app. No plano grátis, o Google pode usar o conteúdo enviado para melhorar os produtos dele, então não envie dados sigilosos de clientes pela IA grátis.
+3. Preencha `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, `DONO_EMAILS` e `FIREBASE_PROJECT_ID` no `.env` (local) e nas *Environment Variables* da Vercel.
+4. Se o Google mudar o nome do modelo, troque `GEMINI_MODELO` (padrão: `gemini-3.5-flash-lite`).
+
 ## Rodar no computador
 
 ```bash
