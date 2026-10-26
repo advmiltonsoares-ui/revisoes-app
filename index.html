@@ -1,0 +1,880 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Revisões App</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Revisões">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#EEF2F8">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;-webkit-text-size-adjust:100%;font:14px system-ui,sans-serif}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: caderno de estudo — uma coluna estreita, cartão de pergunta no centro, marca-texto amarelo como destaque */
+:root{
+  --bg:#EEF2F8; --surface:#FFFFFF; --ink:#16233F; --muted:#5A6782; --line:#D6DDEA;
+  --accent:#1F4FD1; --accent-ink:#FFFFFF; --mark:#FFE15A; --mark-ink:#16233F;
+  --ok:#1E9E5A; --ok-soft:#DDF4E6; --bad:#D6453D; --bad-soft:#FBE3E1;
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  --radius:18px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1626; --surface:#18223A; --ink:#E9EEF8; --muted:#A3AEC6; --line:#2B3754;
+  --accent:#7FA2FF; --accent-ink:#0F1626; --mark:#F2CF3A; --mark-ink:#16233F;
+  --ok:#4FD08C; --ok-soft:#173A2A; --bad:#FF7C72; --bad-soft:#40211F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1626; --surface:#18223A; --ink:#E9EEF8; --muted:#A3AEC6; --line:#2B3754;
+  --accent:#7FA2FF; --accent-ink:#0F1626; --mark:#F2CF3A; --mark-ink:#16233F;
+  --ok:#4FD08C; --ok-soft:#173A2A; --bad:#FF7C72; --bad-soft:#40211F; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:2rem;font-weight:700}
+h2{font-size:1.4rem;font-weight:600}
+h3{font-size:1.1rem;font-weight:600}
+.mark{background:linear-gradient(transparent 55%,var(--mark) 55%);color:inherit;padding:0 .1em}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+.label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+button,.btn{font:inherit;font-weight:700;border:0;border-radius:999px;padding:12px 20px;cursor:pointer;background:var(--accent);color:var(--accent-ink);min-height:46px}
+button.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+button.link{background:none;color:var(--accent);padding:6px 4px;min-height:0;border-radius:6px}
+button.danger{background:var(--bad);color:#fff}
+button.ok{background:var(--ok);color:#fff}
+button:focus-visible,input:focus-visible,textarea:focus-visible,.opt:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.list{display:flex;flex-direction:column;gap:12px}
+.rev{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.rev .meta{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.parts{display:flex;flex-direction:column;gap:8px}
+.part{display:flex;align-items:center;gap:10px;padding:10px 12px;border:2px solid var(--line);border-radius:14px;background:var(--surface);cursor:pointer;font-weight:700}
+.part input{width:20px;height:20px;accent-color:var(--accent)}
+.part .n{margin-left:auto;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.progress{height:10px;background:var(--line);border-radius:999px;overflow:hidden}
+.progress span{display:block;height:100%;background:var(--accent);transition:width .25s}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:22px 20px;display:flex;flex-direction:column;gap:16px;min-height:220px}
+.q{font-family:var(--display);font-size:1.35rem;font-weight:600;white-space:pre-line}
+.ans{background:var(--mark);color:var(--mark-ink);border-radius:14px;padding:14px 16px;font-weight:700;white-space:pre-line}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;background:var(--bg);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-weight:700;min-height:0}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.score{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.score div{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.score b{display:block;font-family:var(--display);font-size:1.8rem;font-variant-numeric:tabular-nums}
+.big{font-family:var(--display);font-size:3.2rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+.readpart{display:flex;flex-direction:column;gap:10px}
+.qa{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.qa p{margin:0;font-weight:800;white-space:pre-line}
+.qa .r{margin-top:6px;white-space:pre-line}
+.qa ul{margin:6px 0 0;padding-left:18px}
+label.f{display:flex;flex-direction:column;gap:6px;font-weight:700}
+.wrap > button.link{align-self:flex-start}
+input[type=text],input[type=password],textarea{font:inherit;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:10px 12px;width:100%;min-width:0}
+textarea{resize:vertical;min-height:70px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.grid2{grid-template-columns:1fr}.score b{font-size:1.5rem}}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:12px}
+.qedit{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.notice{border-left:4px solid var(--accent);background:var(--surface);padding:10px 14px;border-radius:0 12px 12px 0}
+.confirm{background:var(--bad-soft);border:2px solid var(--bad);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.empty{text-align:center;padding:32px 16px;border:2px dashed var(--line);border-radius:var(--radius);display:flex;flex-direction:column;gap:12px;align-items:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;z-index:20}
+.wrap{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+.tabbar .in{display:grid;grid-template-columns:repeat(3,1fr);width:100%;max-width:640px}
+.tab{background:none;color:var(--muted);border-radius:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px 10px;min-height:58px;font-size:.78rem;font-weight:800}
+.tab svg{width:24px;height:24px}
+.tab[aria-current="true"]{color:var(--accent)}
+.tab[aria-current="true"] .pill{background:var(--mark)}
+.tab .pill{padding:3px 16px;border-radius:999px;display:flex}
+/* chat */
+.chat{display:flex;flex-direction:column;gap:12px}
+.msg{max-width:88%;padding:10px 14px;border-radius:18px;white-space:pre-wrap;word-wrap:break-word;min-width:0}
+.msg.u{align-self:flex-end;background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:6px}
+.msg.a{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:6px;white-space:normal}
+.msg.a p{margin:0 0 8px}.msg.a p:last-child{margin:0}
+.msg.a ul{margin:0 0 8px;padding-left:20px}
+.msg img{max-width:160px;border-radius:10px;display:block;margin-bottom:6px}
+.composer{position:sticky;bottom:calc(66px + env(safe-area-inset-bottom,0px));background:var(--bg);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.composer .row{flex-wrap:nowrap;align-items:flex-end}
+.composer textarea{min-height:46px;max-height:160px;border-radius:22px;padding:11px 16px}
+.iconbtn{width:46px;height:46px;min-height:46px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+.iconbtn svg{width:22px;height:22px}
+.sugs{display:flex;flex-wrap:wrap;gap:8px}
+.sug{background:var(--surface);color:var(--ink);border:1px solid var(--line);font-weight:700;font-size:.9rem;padding:8px 14px;min-height:0}
+/* slides */
+.stage{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;background:var(--accent);color:#fff;border-radius:18px;overflow:hidden;container-type:inline-size}
+.slide{position:absolute;inset:0;padding:6cqw 7cqw;display:flex;flex-direction:column;gap:2.4cqw;background:#FFFFFF;color:#16233F}
+.slide.capa{background:#1F4FD1;color:#fff;justify-content:center}
+.slide .em{font-size:7cqw;line-height:1}
+.slide h2{font-size:5.2cqw;font-family:var(--display);color:inherit}
+.slide.capa h2{font-size:7.5cqw}
+.slide ul{margin:0;padding-left:4cqw;display:flex;flex-direction:column;gap:1.2cqw;font-size:3.1cqw;line-height:1.3}
+.slide .dest{margin-top:auto;background:#FFE15A;color:#16233F;border-radius:1.6cqw;padding:1.6cqw 2.4cqw;font-weight:800;font-size:2.8cqw}
+.slide .num{position:absolute;right:3cqw;bottom:2.4cqw;font-size:2cqw;color:#5A6782;font-variant-numeric:tabular-nums}
+.slide.capa .num{color:#C9D4EE}
+.slide .bar{position:absolute;left:0;top:0;bottom:0;width:1.4cqw;background:#FFE15A}
+.stage:fullscreen{border-radius:0;aspect-ratio:auto;background:#000;display:flex;align-items:center}
+.stage:fullscreen .slide{inset:auto;position:relative;width:100%;aspect-ratio:16/9;margin:auto}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.thumb{padding:0;background:none;border:2px solid var(--line);border-radius:12px;overflow:hidden;min-height:0}
+.thumb[aria-current="true"]{border-color:var(--accent)}
+.thumb .stage{border-radius:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" id="app"></div>
+<style>.gear{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:max(12px,env(safe-area-inset-right,0px));z-index:16;width:42px;height:42px;min-height:42px;padding:0;border-radius:50%;background:var(--surface);color:var(--ink);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}.gear svg{width:22px;height:22px}.top{padding-right:52px}</style>
+<button class="gear" id="gear" aria-label="Configurações"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+<div class="toast" id="toast" hidden></div>
+<nav class="tabbar" aria-label="Seções"><div class="in">
+  <button class="tab" data-tab="chat"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span>Chat IA</button>
+  <button class="tab" data-tab="slides"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg></span>Slides</button>
+  <button class="tab" data-tab="revisoes"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 8h6M8 12h8"/></svg></span>Revisões</button>
+</div></nav>
+
+<script>
+/*PARSER_START*/
+function parseRevisao(texto){
+  const lines = texto.replace(/\r/g,'').split('\n');
+  const out = {titulo:'', subtitulo:'', partes:[]};
+  let parte=null, q=null, modo=null;
+  const limpa = s => s.replace(/^[^\p{L}\p{N}]+/u,'').trim();
+  const emojiDe = s => { const m = s.match(/^\s*(\p{Extended_Pictographic}️?)/u); return m?m[1]:''; };
+  const prox = i => { for(let j=i+1;j<lines.length;j++){ const t=lines[j].trim(); if(t && !/^[⸻—\-_=]{1,}$/.test(t)) return t; } return ''; };
+  const ehResp = t => /^resposta\s*:?/i.test(t);
+  const ehOpc = t => /^[A-Ea-e]\)\s*/.test(t);
+  const fecha = () => { if(q && parte){ q.p=q.p.trim(); q.r=q.r.trim(); if(q.p) parte.perguntas.push(q);} q=null; modo=null; };
+  for(let i=0;i<lines.length;i++){
+    let t = lines[i].trim();
+    if(!t || /^[⸻—\-_=]{1,}$/.test(t)) continue;
+    const bullet = /^([*•\-]|\d+[.)])\s+/.test(t);
+    const semBullet = t.replace(/^([*•\-]|\d+[.)])\s+/,'');
+    const letras = semBullet.replace(/[^\p{L}]/gu,'');
+    const caixaAlta = letras.length>3 && letras===letras.toUpperCase();
+    if(!bullet && !ehResp(t) && !ehOpc(t) && (/\bPARTE\b|DESAFIO/i.test(t) || caixaAlta)){
+      if(!out.titulo && !out.partes.length && !/\bPARTE\b/i.test(t)){ out.titulo = limpa(t); continue; }
+      fecha();
+      parte = {nome: limpa(t), emoji: emojiDe(t), perguntas: []};
+      out.partes.push(parte); continue;
+    }
+    if(!parte){ if(out.titulo && !out.subtitulo) out.subtitulo = t; continue; }
+    if(ehResp(t)){ if(!q) q={p:'',r:'',opcoes:[]}; modo='r'; q.r = t.replace(/^resposta\s*:?\s*/i,''); continue; }
+    if(ehOpc(t) && q && modo!=='r'){ q.opcoes.push(t); continue; }
+    if(bullet){
+      const nx = prox(i);
+      if(ehResp(nx) || ehOpc(nx) || !q || modo!=='r'){
+        if(q && modo!=='r' && !(ehResp(nx)||ehOpc(nx))){ q.p += '\n'+semBullet; continue; }
+        fecha(); q={p:semBullet,r:'',opcoes:[]}; modo='p'; continue;
+      }
+      q.r += (q.r?'\n':'')+'• '+semBullet; continue;
+    }
+    if(q){ if(modo==='r') q.r += (q.r?'\n':'')+t; else q.p += '\n'+t; }
+  }
+  fecha();
+  out.partes = out.partes.filter(p=>p.perguntas.length);
+  out.partes.forEach(p=>p.perguntas.forEach(q=>{ if(!q.opcoes.length) delete q.opcoes; }));
+  return out;
+}
+/*PARSER_END*/
+
+const $app = document.getElementById('app');
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let db=null, podeEscrever=true, modoLocal=false, carregado=false;
+let revisoes=[];
+let S = {view:'home'};
+
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(()=>t.hidden=true,2200); }
+function total(r){ return (r.partes||[]).reduce((a,p)=>a+(p.perguntas||[]).length,0); }
+function lerLocal(){ try{ return JSON.parse(localStorage.getItem('revisoes-app')||'[]'); }catch(e){ return []; } }
+function gravarLocal(){ try{ localStorage.setItem('revisoes-app', JSON.stringify(revisoes)); }catch(e){} }
+
+async function salvar(rev){
+  rev.atualizadaEm = new Date().toISOString();
+  if(!rev.id) rev.id = 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  const {id, ...corpo} = rev;
+  if(db && !modoLocal){
+    await db.collection('revisoes').doc(id).set(JSON.parse(JSON.stringify(corpo)));
+  } else {
+    const i = revisoes.findIndex(r=>r.id===id);
+    if(i>=0) revisoes[i]=rev; else revisoes.push(rev);
+    gravarLocal(); render();
+  }
+  return id;
+}
+async function apagar(id){
+  if(db && !modoLocal) await db.collection('revisoes').doc(id).delete();
+  else { revisoes = revisoes.filter(r=>r.id!==id); gravarLocal(); render(); }
+}
+
+/* ---------- telas ---------- */
+let aba='revisoes', viewsPorAba={revisoes:{view:'home'},chat:null,slides:{view:'slidesHome'}};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  if(b.dataset.tab===aba){ if(aba==='revisoes') S={view:'home'}; if(aba==='slides') S={view:'slidesHome'}; render(); window.scrollTo(0,0); return; }
+  if(aba!=='config') viewsPorAba[aba]=S; aba=b.dataset.tab;
+  S = viewsPorAba[aba] || (aba==='chat'?{view:'chat'}:aba==='slides'?{view:'slidesHome'}:{view:'home'});
+  render(); window.scrollTo(0, aba==='chat'?document.body.scrollHeight:0);
+});
+function telaConfig(){
+  const k=chaveIA();
+  $app.innerHTML=`
+    <button class="link" id="cVolta">← Voltar</button>
+    <div><div class="label">Revisões App</div><h1>Configurações</h1></div>
+    <div class="box">
+      <h3>Ativar a IA ${k?'<span class="chip" style="color:var(--ok);border-color:var(--ok)">ativa</span>':''}</h3>
+      <p class="small" style="margin:0">A IA do app (Chat, Slides e criar revisões) usa uma <b>chave da Anthropic</b>, a empresa do Claude. Você cria a chave uma vez e cola aqui. Ela fica guardada <b>só neste celular</b>.</p>
+      <ol class="small" style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px">
+        <li>Entre em <b>console.anthropic.com</b> e crie a conta.</li>
+        <li>Em <b>Billing</b>, coloque créditos (a partir de US$ 5).</li>
+        <li>Em <b>API Keys</b>, toque em <b>Create Key</b> e copie a chave (começa com <b>sk-ant-</b>).</li>
+        <li>Cole aqui embaixo e toque em <b>Salvar e testar</b>.</li>
+      </ol>
+      <label class="f">Chave da IA<input type="password" id="chave" autocomplete="off" placeholder="sk-ant-..." value="${esc(k)}"></label>
+      <div class="row"><button id="salvarChave">Salvar e testar</button>${k?'<button class="link" id="tirarChave" style="color:var(--bad)">Remover chave</button>':''}</div>
+      <div id="cStatus" class="small" hidden></div>
+    </div>
+    <div class="box">
+      <h3>Levar as revisões para outro celular</h3>
+      <p class="small muted" style="margin:0">As revisões e os slides ficam salvos neste aparelho. Para passar para outro celular, copie a cópia de segurança aqui, mande por WhatsApp e cole no outro app.</p>
+      <div class="row"><button class="ghost" id="copiaBackup">Copiar cópia de segurança</button></div>
+      <label class="f">Colar cópia de segurança<textarea id="backupIn" rows="3" placeholder="Cole aqui o texto copiado do outro celular"></textarea></label>
+      <div class="row"><button class="ghost" id="restaura">Juntar ao meu app</button></div>
+    </div>`;
+  document.getElementById('cVolta').onclick=()=>{ const v=S.voltar||{aba:'revisoes',S:{view:'home'}}; aba=v.aba==='config'?'revisoes':v.aba; S=v.S&&v.S.view!=='config'?v.S:{view:'home'}; render(); };
+  document.getElementById('salvarChave').onclick=async e=>{
+    const v=document.getElementById('chave').value.trim(); const st=document.getElementById('cStatus'); st.hidden=false;
+    if(!v.startsWith('sk-ant-')){ st.textContent='A chave começa com sk-ant-. Confira se copiou inteira.'; st.style.color='var(--bad)'; return; }
+    try{ localStorage.setItem('revisoes-chave',v); }catch(err){ st.textContent='Não consegui guardar a chave neste navegador.'; return; }
+    e.target.disabled=true; st.style.color='var(--muted)'; st.textContent='Testando a IA…';
+    try{ await chamarIA('Responda só: ok',{maxTokens:10}); st.style.color='var(--ok)'; st.textContent='Pronto! A IA está ativa.'; toast('IA ativada'); }
+    catch(err){ st.style.color='var(--bad)'; st.textContent=erroIA(err); }
+    e.target.disabled=false;
+  };
+  const tc=document.getElementById('tirarChave'); if(tc) tc.onclick=()=>{ try{ localStorage.removeItem('revisoes-chave'); }catch(e){} render(); toast('Chave removida'); };
+  document.getElementById('copiaBackup').onclick=()=>{
+    const t=JSON.stringify({app:'revisoes',revisoes,slides:decks});
+    const ok=()=>toast('Copiado. Agora é só colar no WhatsApp.');
+    const fb=()=>{ const ta=document.getElementById('backupIn'); ta.value=t; ta.focus(); ta.select(); toast('Selecionei o texto: toque em Copiar'); };
+    try{ navigator.clipboard.writeText(t).then(ok,fb); }catch(e){ fb(); }
+  };
+  document.getElementById('restaura').onclick=()=>{
+    let d; try{ d=JSON.parse(document.getElementById('backupIn').value); }catch(e){ toast('Esse texto não é uma cópia de segurança do app'); return; }
+    if(!d||d.app!=='revisoes'){ toast('Esse texto não é uma cópia de segurança do app'); return; }
+    let n=0; (d.revisoes||[]).forEach(r=>{ if(r&&r.id&&!revisoes.some(x=>x.id===r.id)){ revisoes.push(r); n++; } });
+    (d.slides||[]).forEach(r=>{ if(r&&r.id&&!decks.some(x=>x.id===r.id)){ decks.push(r); n++; } });
+    gravarLocal(); gravarDecksLocal(); document.getElementById('backupIn').value=''; toast(n?`${n} item(ns) adicionados`:'Nada novo para adicionar');
+  };
+}
+function marcarAba(){ document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-current', b.dataset.tab===aba?'true':'false')); }
+function render(){
+  marcarAba();
+  if(S.view==='config') return telaConfig();
+  if(S.view==='chat') return telaChat();
+  if(S.view==='slidesHome') return slidesHome();
+  if(S.view==='slidesVer') return slidesVer();
+  if(S.view==='home') return home();
+  if(S.view==='prep') return prep();
+  if(S.view==='estudo') return estudo();
+  if(S.view==='fim') return fim();
+  if(S.view==='lista') return lista();
+  if(S.view==='editor') return editor();
+  if(S.view==='ia') return telaIA();
+}
+
+/* ---------- IA ---------- */
+/* ---------- IA própria do app (chave da API da Anthropic, guardada só neste aparelho) ---------- */
+const MODELO_IA = 'claude-sonnet-5-5';
+function chaveIA(){ try{ return localStorage.getItem('revisoes-chave')||''; }catch(e){ return ''; } }
+function blobParaB64(b){ return new Promise((ok,err)=>{ const r=new FileReader(); r.onload=()=>ok(String(r.result).split(',')[1]); r.onerror=err; r.readAsDataURL(b); }); }
+async function montarMsgs(input,images){
+  let msgs = typeof input==='string' ? [{role:'user',content:input}] : input.map(m=>({role:m.role,content:m.content}));
+  if(images && images.length){
+    const last=msgs[msgs.length-1]; const partes=[];
+    for(const im of images){ partes.push({type:'image',source:{type:'base64',media_type:im.type||'image/jpeg',data:await blobParaB64(im)}}); }
+    partes.push({type:'text',text:String(last.content)}); last.content=partes;
+  }
+  return msgs;
+}
+async function chamarIA(input,opts={}){
+  const key=chaveIA(); if(!key) throw {code:'sem_chave',message:'sem chave'};
+  const body={model:MODELO_IA,max_tokens:opts.maxTokens||8000,stream:true,messages:await montarMsgs(input,opts.images)};
+  if(opts.system) body.system=opts.system;
+  let resp;
+  try{
+    resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:opts.signal,headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
+  }catch(e){ if(e&&e.name==='AbortError') throw {code:'cancelled'}; throw {code:'offline'}; }
+  if(!resp.ok){ let msg=''; try{ msg=(await resp.json()).error.message; }catch(e){}
+    throw {code: resp.status===401?'chave_invalida': resp.status===429||resp.status===529?'rate_limited': resp.status===400&&/credit/i.test(msg)?'sem_credito':'upstream_error', message:msg}; }
+  const rd=resp.body.getReader(), dec=new TextDecoder(); let buf='', text='';
+  try{
+    while(true){ const {value,done}=await rd.read(); if(done) break; buf+=dec.decode(value,{stream:true});
+      let i; while((i=buf.indexOf('\n'))>=0){ const l=buf.slice(0,i).trim(); buf=buf.slice(i+1);
+        if(!l.startsWith('data:')) continue; let ev; try{ ev=JSON.parse(l.slice(5)); }catch(e){ continue; }
+        if(ev.type==='content_block_delta' && ev.delta && ev.delta.type==='text_delta'){ text+=ev.delta.text; if(opts.onText) opts.onText({text,delta:ev.delta.text}); }
+        if(ev.type==='error') throw {code:'upstream_error',text}; } }
+  }catch(e){ if(e&&e.name==='AbortError') throw {code:'cancelled',text}; throw e.code?e:{code:'upstream_error',text}; }
+  return {text};
+}
+function extrairJSON(t){
+  const f=t.match(/```(?:json)?\s*([\s\S]*?)```/); if(f) t=f[1];
+  const a=t.search(/[\[{]/); if(a<0) throw {code:'invalid_json',text:t};
+  const z=Math.max(t.lastIndexOf('}'),t.lastIndexOf(']'));
+  try{ return JSON.parse(t.slice(a,z+1)); }catch(e){ throw {code:'invalid_json',text:t}; }
+}
+const sampleProprio = Object.assign((input,opts)=>chamarIA(input,opts),{
+  json: async(input,opts={})=>{ const r=await chamarIA(input,opts); return extrairJSON(r.text); },
+  limits: async()=>({images:{maxCount:4}})
+});
+let sampleLimites={images:{maxCount:4}};
+async function getSample(){
+  if(!chaveIA()){ S={view:'config',voltar:{aba,S}}; aba='config'; render(); window.scrollTo(0,0); toast('Primeiro, ative a IA com a sua chave'); return null; }
+  return sampleProprio;
+}
+
+const FORMATO = `Responda SOMENTE com JSON neste formato:
+{"titulo":"Revisão de ...","materia":"...","serie":"...","partes":[{"nome":"PARTE 1 — ...","emoji":"🟢","perguntas":[{"p":"pergunta","r":"resposta"},{"p":"pergunta de múltipla escolha","opcoes":["A) ...","B) ...","C) ...","D) ..."],"r":"C) texto da alternativa certa"}]}]}`;
+const REGRAS = `Regras:
+- Português do Brasil, linguagem simples e adequada à série informada.
+- Conteúdo 100% correto, como num livro didático brasileiro (BNCC). Na dúvida, não invente.
+- Respostas curtas e diretas, para a criança conferir sozinha. Em respostas com vários itens, um item por linha começando com "• ".
+- Múltipla escolha: exatamente 4 opções "A) ... B) ... C) ... D) ...", só uma correta, e "r" começa pela letra certa.
+- Varie os tipos: conceito, exemplo, complete a frase, identifique, múltipla escolha.
+- Agrupe em partes por tema, do mais fácil ao mais difícil. A última parte se chama "DESAFIO FINAL" com emoji 🏆 e mistura tudo.
+- Use emojis de bolinha colorida diferentes para cada parte (🟢 🔵 🟡 🔴 🟣 🟠).`;
+function erroIA(e){
+  const c=e&&e.code;
+  if(c==='sem_chave') return 'Ative a IA em Configurações (botão ⚙️ no alto).';
+  if(c==='chave_invalida') return 'A chave da IA não foi aceita. Confira em Configurações (⚙️).';
+  if(c==='sem_credito') return 'Acabaram os créditos da IA. Coloque créditos em console.anthropic.com.';
+  if(c==='offline') return 'Sem internet. A IA precisa de conexão.';
+  if(c==='rate_limited') return 'A IA está ocupada agora. Espere um minuto e tente de novo.';
+  if(c==='invalid_json') return 'A IA respondeu fora do formato. Tente de novo.';
+  if(c==='cancelled') return 'Criação cancelada.';
+  return 'Não foi possível agora. Tente de novo em instantes.';
+}
+function normalizar(res){
+  const d={titulo:String(res.titulo||'').trim(),materia:String(res.materia||'').trim(),serie:String(res.serie||'').trim(),subtitulo:'Criada com IA',partes:[]};
+  (res.partes||[]).forEach(p=>{
+    const perg=(p.perguntas||[]).filter(q=>q&&q.p).map(q=>{const o={p:String(q.p).trim(),r:String(q.r||'').trim()}; if(Array.isArray(q.opcoes)&&q.opcoes.length) o.opcoes=q.opcoes.map(String); return o;});
+    if(perg.length) d.partes.push({nome:String(p.nome||'Parte').trim(),emoji:String(p.emoji||''),perguntas:perg});
+  });
+  return d;
+}
+
+function telaIA(){
+  const f=S.f, podeFoto = !!(sampleLimites&&sampleLimites.images);
+  $app.innerHTML = `
+    <button class="link" id="voltar">← Voltar</button>
+    <div><div class="label">Revisões App</div><h1>Criar revisão com <span class="mark">IA</span></h1></div>
+    <div class="box">
+      <label class="f">Assunto da revisão<input type="text" id="assunto" value="${esc(f.assunto)}" placeholder="Ex.: Frações; Verbos e conjugações; Sistema solar"></label>
+      <div class="grid2">
+        <label class="f">Série<input type="text" id="serie" value="${esc(f.serie)}" placeholder="Ex.: 6º ano"></label>
+        <label class="f">Quantas perguntas?<input type="text" id="qtd" inputmode="numeric" value="${esc(f.qtd)}"></label>
+      </div>
+      <label class="f">Tipo de pergunta
+        <select id="tipo" style="font:inherit;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:10px 12px">
+          <option value="misto" ${f.tipo==='misto'?'selected':''}>Misturado (abertas + múltipla escolha)</option>
+          <option value="abertas" ${f.tipo==='abertas'?'selected':''}>Só perguntas com resposta</option>
+          <option value="multipla" ${f.tipo==='multipla'?'selected':''}>Só múltipla escolha</option>
+        </select>
+      </label>
+      <label class="f">Conteúdo da prova <span class="muted small" style="font-weight:600">(opcional: cole o que a escola mandou estudar)</span>
+        <textarea id="conteudo" rows="4" placeholder="Ex.: Prova dia 30: modos verbais indicativo, subjuntivo e imperativo; frase, oração e período.">${esc(f.conteudo)}</textarea></label>
+      ${podeFoto?`<label class="f">Fotos do caderno ou do livro <span class="muted small" style="font-weight:600">(opcional)</span>
+        <input type="file" id="fotos" accept="image/*" multiple></label>
+        ${S.fotos.length?`<span class="small muted">${S.fotos.length} foto(s) escolhida(s)</span>`:''}`:''}
+      <button id="gerar">✨ Criar revisão</button>
+      <div id="status" class="small muted" hidden></div>
+    </div>
+    <p class="small muted" style="margin:0">A IA monta as perguntas e as respostas. Antes de salvar, você confere e pode corrigir qualquer uma.</p>`;
+  const ler=()=>{ f.assunto=document.getElementById('assunto').value.trim(); f.serie=document.getElementById('serie').value.trim(); f.qtd=document.getElementById('qtd').value.trim(); f.conteudo=document.getElementById('conteudo').value.trim(); f.tipo=document.getElementById('tipo').value; };
+  document.getElementById('voltar').onclick=()=>{ if(S.ctrl) S.ctrl.abort(); S={view:'home'};render();};
+  const fi=document.getElementById('fotos'); if(fi) fi.onchange=e=>{ ler(); S.fotos=[...e.target.files].slice(0,(sampleLimites.images.maxCount||4)); render(); };
+  document.getElementById('gerar').onclick=async e=>{
+    ler();
+    if(!f.assunto && !f.conteudo && !S.fotos.length){ toast('Escreva o assunto da revisão'); return; }
+    const sp=await getSample();
+    if(!sp){ toast('Ative a IA em Configurações.'); return; }
+    const n=Math.min(Math.max(parseInt(f.qtd)||20,5),60);
+    const tipo = f.tipo==='abertas'?'Todas as perguntas abertas (sem opções).':f.tipo==='multipla'?'Todas as perguntas de múltipla escolha.':'Misture: cerca de 1 a cada 4 perguntas de múltipla escolha.';
+    const prompt = `Você é um professor brasileiro montando uma revisão para a criança estudar em casa com os pais.
+Assunto: ${f.assunto||'(veja o conteúdo/fotos)'}
+Série: ${f.serie||'não informada (deduza pelo conteúdo)'}
+Total de perguntas: ${n}
+${tipo}
+${f.conteudo?'Conteúdo indicado pela escola:\n'+f.conteudo:''}
+${S.fotos.length?'As fotos anexas mostram o caderno/livro: baseie a revisão no que aparece nelas.':''}
+
+${REGRAS}
+
+${FORMATO}`;
+    const st=document.getElementById('status'); st.hidden=false; st.textContent='Criando as perguntas… isso leva uns 30 segundos.';
+    e.target.disabled=true; S.ctrl=new AbortController();
+    try{
+      const opts={modelTier:'default',signal:S.ctrl.signal,onText:({text})=>{ st.textContent=`Criando as perguntas… ${Math.max(1,(text.match(/"p"\s*:/g)||[]).length)} prontas`; }};
+      if(S.fotos.length) opts.images=S.fotos;
+      const res=await sp.json(prompt,opts);
+      const d=normalizar(res);
+      if(!d.partes.length) throw {code:'invalid_json'};
+      if(!d.serie && f.serie) d.serie=f.serie;
+      S={view:'editor',confirmar:false,rascunho:d,colar:''}; render(); window.scrollTo(0,0);
+      toast(`${total(d)} perguntas criadas. Confira e salve.`);
+    }catch(err){ e.target.disabled=false; st.textContent=erroIA(err); }
+  };
+}
+
+async function maisPerguntasIA(d,pi,btn){
+  const sp=await getSample(); if(!sp){ toast('Ative a IA em Configurações.'); return; }
+  const p=d.partes[pi];
+  btn.disabled=true; btn.textContent='Criando…';
+  const prompt=`Você é um professor brasileiro. Revisão: "${d.titulo}" (${d.materia||''} ${d.serie||''}).
+Parte: "${p.nome}". Perguntas que já existem nesta parte (NÃO repita):
+${p.perguntas.map(q=>'- '+q.p).join('\n')}
+
+Crie 5 perguntas NOVAS para esta mesma parte, no mesmo nível.
+${REGRAS}
+
+Responda SOMENTE com JSON: {"perguntas":[{"p":"...","r":"..."},{"p":"...","opcoes":["A) ...","B) ...","C) ...","D) ..."],"r":"B) ..."}]}`;
+  try{
+    const res=await sp.json(prompt,{modelTier:'default'});
+    const novas=normalizar({partes:[{nome:'x',perguntas:res.perguntas||[]}]}).partes[0];
+    if(!novas) throw {code:'invalid_json'};
+    p.perguntas.push(...novas.perguntas); render(); toast(`${novas.perguntas.length} perguntas novas em ${p.nome}`);
+  }catch(err){ btn.disabled=false; btn.textContent='✨ +5 perguntas com IA'; toast(erroIA(err)); }
+}
+
+function home(){
+  const ord = [...revisoes].sort((a,b)=>(b.atualizadaEm||'').localeCompare(a.atualizadaEm||''));
+  $app.innerHTML = `
+    <div class="top">
+      <div><div class="label">Revisões App</div><h1>Hora de <span class="mark">revisar</span></h1></div>
+      ${podeEscrever?'<div class="row"><button id="ia">✨ Criar com IA</button><button class="ghost" id="nova">+ Colar texto</button></div>':''}
+    </div>
+    ${modoLocal?'<div class="notice small">As revisões estão sendo salvas só neste aparelho.</div>':''}
+    <div class="list">
+      ${!carregado?'<div class="empty"><p class="muted">Carregando as revisões…</p></div>':
+        ord.length? ord.map(r=>`
+        <article class="rev">
+          <div class="meta">${r.materia?`<span class="chip">${esc(r.materia)}</span>`:''}${r.serie?`<span class="chip">${esc(r.serie)}</span>`:''}<span class="chip">${total(r)} perguntas</span></div>
+          <h2>${esc(r.titulo||'Revisão sem nome')}</h2>
+          ${r.subtitulo?`<div class="muted small">${esc(r.subtitulo)}</div>`:''}
+          <div class="row">
+            <button data-a="estudar" data-id="${esc(r.id)}">Estudar</button>
+            <button class="ghost" data-a="ler" data-id="${esc(r.id)}">Ver tudo</button>
+            ${podeEscrever?`<button class="link" data-a="editar" data-id="${esc(r.id)}">Editar</button>`:''}
+          </div>
+        </article>`).join('') :
+        `<div class="empty"><h3>Nenhuma revisão ainda</h3><p class="muted">Cole o texto de uma revisão com perguntas e respostas e o app monta o estudo.</p>${podeEscrever?'<button id="nova2">+ Criar a primeira revisão</button>':''}</div>`}
+    </div>`;
+  const n=document.getElementById('nova')||null; if(n) n.onclick=()=>abrirEditor(null);
+  const ia=document.getElementById('ia'); if(ia) ia.onclick=()=>{S={view:'ia',f:{assunto:'',serie:'',qtd:'20',conteudo:'',tipo:'misto'},fotos:[]};render();window.scrollTo(0,0);};
+  const n2=document.getElementById('nova2'); if(n2) n2.onclick=()=>abrirEditor(null);
+  $app.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{
+    const r = revisoes.find(x=>x.id===b.dataset.id); if(!r) return;
+    if(b.dataset.a==='estudar'){ S={view:'prep', rev:r, sel:r.partes.map(()=>true), embaralhar:true}; }
+    if(b.dataset.a==='ler'){ S={view:'lista', rev:r}; }
+    if(b.dataset.a==='editar'){ abrirEditor(r); return; }
+    render(); window.scrollTo(0,0);
+  });
+}
+
+function prep(){
+  const r=S.rev;
+  $app.innerHTML = `
+    <button class="link" id="voltar">← Voltar</button>
+    <div><div class="label">${esc(r.materia||'Revisão')}</div><h1>${esc(r.titulo)}</h1></div>
+    <div class="box">
+      <h3>O que vamos estudar?</h3>
+      <div class="parts">${r.partes.map((p,i)=>`
+        <label class="part"><input type="checkbox" id="p${i}" ${S.sel[i]?'checked':''}> ${esc(p.emoji||'')} ${esc(p.nome)} <span class="n">${p.perguntas.length}</span></label>`).join('')}
+      </div>
+      <label class="part"><input type="checkbox" id="emb" ${S.embaralhar?'checked':''}> Misturar a ordem das perguntas</label>
+      <button id="comecar">Começar</button>
+    </div>`;
+  document.getElementById('voltar').onclick=()=>{S={view:'home'};render();};
+  r.partes.forEach((p,i)=>document.getElementById('p'+i).onchange=e=>S.sel[i]=e.target.checked);
+  document.getElementById('emb').onchange=e=>S.embaralhar=e.target.checked;
+  document.getElementById('comecar').onclick=()=>{
+    let deck=[]; r.partes.forEach((p,i)=>{ if(S.sel[i]) p.perguntas.forEach(q=>deck.push({...q, parte:p.nome, emoji:p.emoji||''})); });
+    if(!deck.length){ toast('Marque pelo menos uma parte'); return; }
+    iniciar(deck);
+  };
+}
+
+function iniciar(deck){
+  if(S.embaralhar){ for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];} }
+  S = {...S, view:'estudo', deck, i:0, revelada:false, escolha:null, acertos:0, erros:[]};
+  render(); window.scrollTo(0,0);
+}
+
+function letraCerta(q){ const m=(q.r||'').match(/^\s*([A-Ea-e])\)/); return m?m[1].toUpperCase():null; }
+
+function estudo(){
+  const q=S.deck[S.i], n=S.deck.length, certa=letraCerta(q), temOpc=q.opcoes&&q.opcoes.length&&certa;
+  $app.innerHTML = `
+    <div class="top"><button class="link" id="sair">← Sair</button><span class="muted small" style="font-variant-numeric:tabular-nums">${S.i+1} de ${n} · ${S.acertos} acertos</span></div>
+    <div class="progress"><span style="width:${(S.i/n)*100}%"></span></div>
+    <div class="card">
+      <span class="chip" style="align-self:flex-start">${esc(q.emoji)} ${esc(q.parte)}</span>
+      <div class="q">${esc(q.p)}</div>
+      ${temOpc?`<div class="opts">${q.opcoes.map(o=>{const L=o.trim()[0].toUpperCase();
+        let c=''; if(S.escolha){ if(L===certa) c='right'; else if(L===S.escolha) c='wrong'; }
+        return `<button class="opt ${c}" data-l="${L}" ${S.escolha?'disabled':''}>${esc(o)}</button>`;}).join('')}</div>`
+      : (q.opcoes&&q.opcoes.length? `<ul>${q.opcoes.map(o=>`<li>${esc(o)}</li>`).join('')}</ul>`:'')}
+      ${S.revelada?`<div class="ans">${esc(q.r||'(sem resposta cadastrada)')}</div>`:''}
+    </div>
+    <div class="row" id="acoes"></div>`;
+  const ac=document.getElementById('acoes');
+  document.getElementById('sair').onclick=()=>{S={view:'home'};render();};
+  if(temOpc && !S.escolha){
+    $app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ S.escolha=b.dataset.l; S.revelada=true; if(S.escolha===certa) S.acertos++; else S.erros.push(q); render(); });
+    ac.innerHTML='<span class="muted small">Toque na alternativa certa.</span>';
+  } else if(temOpc){
+    ac.innerHTML=`<span style="font-weight:800;color:var(${S.escolha===certa?'--ok':'--bad'})">${S.escolha===certa?'Acertou!':'Quase! Veja a certa em verde.'}</span><button id="prox" style="margin-left:auto">Próxima →</button>`;
+    document.getElementById('prox').onclick=avancar;
+  } else if(!S.revelada){
+    ac.innerHTML='<button id="ver" style="flex:1">Mostrar resposta</button>';
+    document.getElementById('ver').onclick=()=>{S.revelada=true;render();};
+  } else {
+    ac.innerHTML='<button class="danger" id="errei" style="flex:1">Errei</button><button class="ok" id="acertei" style="flex:1">Acertei</button>';
+    document.getElementById('errei').onclick=()=>{S.erros.push(q);avancar();};
+    document.getElementById('acertei').onclick=()=>{S.acertos++;avancar();};
+  }
+}
+function avancar(){ S.i++; S.revelada=false; S.escolha=null; S.view = S.i>=S.deck.length?'fim':'estudo'; render(); window.scrollTo(0,0); }
+
+function fim(){
+  const n=S.deck.length, pct=Math.round(S.acertos/n*100);
+  const frase = pct>=90?'Mandou muito bem!':pct>=70?'Muito bom! Falta pouco.':pct>=50?'Bom começo. Vamos revisar as que faltaram.':'Vamos com calma e revisar de novo.';
+  $app.innerHTML = `
+    <div class="card" style="align-items:center;text-align:center">
+      <div class="label">Resultado</div>
+      <div class="big">${pct}%</div>
+      <h2>${frase}</h2>
+    </div>
+    <div class="score"><div><b>${n}</b><span class="small muted">perguntas</span></div><div><b style="color:var(--ok)">${S.acertos}</b><span class="small muted">acertos</span></div><div><b style="color:var(--bad)">${S.erros.length}</b><span class="small muted">para revisar</span></div></div>
+    ${S.erros.length?`<div class="box"><h3>Para revisar</h3>${S.erros.map(q=>`<div class="qa"><p>${esc(q.p)}</p><div class="r">${esc(q.r)}</div></div>`).join('')}</div>`:''}
+    <div class="row">
+      ${S.erros.length?'<button id="refazer">Refazer só as que errei</button>':''}
+      <button class="ghost" id="denovo">Estudar tudo de novo</button>
+      <button class="link" id="inicio">Voltar ao início</button>
+    </div>`;
+  const rf=document.getElementById('refazer'); if(rf) rf.onclick=()=>iniciar([...S.erros]);
+  document.getElementById('denovo').onclick=()=>{S={view:'prep',rev:S.rev,sel:S.sel,embaralhar:S.embaralhar};render();};
+  document.getElementById('inicio').onclick=()=>{S={view:'home'};render();};
+}
+
+function lista(){
+  const r=S.rev;
+  $app.innerHTML = `
+    <button class="link" id="voltar">← Voltar</button>
+    <div><div class="label">${esc(r.materia||'Revisão')} ${r.serie?'· '+esc(r.serie):''}</div><h1>${esc(r.titulo)}</h1>${r.subtitulo?`<p class="muted" style="margin:6px 0 0">${esc(r.subtitulo)}</p>`:''}</div>
+    ${r.partes.map(p=>`<section class="readpart"><h2>${esc(p.emoji||'')} ${esc(p.nome)}</h2>
+      ${p.perguntas.map(q=>`<div class="qa"><p>${esc(q.p)}</p>${q.opcoes?`<ul>${q.opcoes.map(o=>`<li>${esc(o)}</li>`).join('')}</ul>`:''}<div class="r"><span class="mark">${esc(q.r)}</span></div></div>`).join('')}
+    </section>`).join('')}
+    <button id="estudar">Estudar esta revisão</button>`;
+  document.getElementById('voltar').onclick=()=>{S={view:'home'};render();};
+  document.getElementById('estudar').onclick=()=>{S={view:'prep',rev:r,sel:r.partes.map(()=>true),embaralhar:true};render();window.scrollTo(0,0);};
+}
+
+/* ---------- editor ---------- */
+function abrirEditor(r){
+  S = {view:'editor', confirmar:false, rascunho: r? JSON.parse(JSON.stringify(r)) : {titulo:'',materia:'',serie:'',subtitulo:'',partes:[]}, colar:''};
+  render(); window.scrollTo(0,0);
+}
+function editor(){
+  const d=S.rascunho;
+  $app.innerHTML = `
+    <button class="link" id="voltar">← Voltar sem salvar</button>
+    <h1>${d.id?'Editar revisão':'Nova revisão'}</h1>
+    <div class="box">
+      <h3>1. Cole o texto da revisão</h3>
+      <p class="muted small" style="margin:0">Cole as perguntas com “Resposta:” embaixo de cada uma, separadas por “PARTE 1”, “PARTE 2”… O app separa tudo sozinho. Funciona com o texto que o ChatGPT ou a escola mandam.</p>
+      <textarea id="colar" rows="7" placeholder="🟢 PARTE 1 — VERBOS&#10; * O que é um verbo?&#10;   Resposta: É uma palavra que indica ação...">${esc(S.colar)}</textarea>
+      <button id="ler">Montar perguntas a partir do texto</button>
+    </div>
+    <div class="box">
+      <h3>2. Confira os dados</h3>
+      <label class="f">Nome da revisão<input type="text" id="titulo" value="${esc(d.titulo)}" placeholder="Ex.: Revisão de Português"></label>
+      <div class="grid2">
+        <label class="f">Matéria<input type="text" id="materia" value="${esc(d.materia)}" placeholder="Português"></label>
+        <label class="f">Série<input type="text" id="serie" value="${esc(d.serie)}" placeholder="6º ano"></label>
+      </div>
+    </div>
+    ${d.partes.map((p,pi)=>`
+      <div class="box">
+        <div class="row"><label class="f" style="flex:1">Parte ${pi+1}<input type="text" id="pn${pi}" value="${esc(p.nome)}"></label><button class="link" data-rp="${pi}">Remover parte</button></div>
+        ${p.perguntas.map((q,qi)=>`<div class="qedit">
+          <label class="f small">Pergunta<textarea id="q${pi}_${qi}" rows="2">${esc(q.p)}${q.opcoes&&q.opcoes.length?'\n'+esc(q.opcoes.join('\n')):''}</textarea></label>
+          <label class="f small">Resposta<textarea id="r${pi}_${qi}" rows="2">${esc(q.r)}</textarea></label>
+          <button class="link" style="align-self:flex-start" data-rq="${pi}_${qi}">Remover pergunta</button>
+        </div>`).join('')}
+        <div class="row"><button class="ghost" data-aq="${pi}">+ Pergunta</button><button class="ghost" data-ia="${pi}">✨ +5 perguntas com IA</button></div>
+      </div>`).join('')}
+    <button class="ghost" id="addparte">+ Nova parte</button>
+    <div class="row"><button id="salvar" style="flex:1">Salvar revisão</button></div>
+    ${d.id?(S.confirmar?`<div class="confirm"><b>Apagar “${esc(d.titulo)}” de vez?</b><div class="row"><button class="danger" id="sim">Apagar</button><button class="ghost" id="nao">Cancelar</button></div></div>`:'<button class="link" id="apagar" style="color:var(--bad);align-self:flex-start">Apagar esta revisão</button>'):''}`;
+
+  const lerCampos = ()=>{
+    d.titulo=document.getElementById('titulo').value.trim();
+    d.materia=document.getElementById('materia').value.trim();
+    d.serie=document.getElementById('serie').value.trim();
+    S.colar=document.getElementById('colar').value;
+    d.partes.forEach((p,pi)=>{ p.nome=document.getElementById('pn'+pi).value.trim();
+      p.perguntas.forEach((q,qi)=>{
+        const linhas=document.getElementById(`q${pi}_${qi}`).value.split('\n');
+        const op=linhas.filter(l=>/^\s*[A-Ea-e]\)/.test(l)).map(l=>l.trim());
+        q.p=linhas.filter(l=>!/^\s*[A-Ea-e]\)/.test(l)).join('\n').trim();
+        if(op.length) q.opcoes=op; else delete q.opcoes;
+        q.r=document.getElementById(`r${pi}_${qi}`).value.trim();
+      });
+    });
+  };
+  document.getElementById('voltar').onclick=()=>{S={view:'home'};render();};
+  document.getElementById('ler').onclick=()=>{
+    lerCampos();
+    const res=parseRevisao(S.colar);
+    if(!res.partes.length){ toast('Não encontrei perguntas com “Resposta:” no texto'); return; }
+    d.partes=res.partes;
+    if(!d.titulo) d.titulo=res.titulo;
+    if(res.subtitulo) d.subtitulo=res.subtitulo;
+    const m=(res.titulo||'').match(/REVIS[ÃA]O DE ([^—\-–]+)/i); if(!d.materia && m) d.materia=m[1].trim().replace(/^./,c=>c.toUpperCase()).replace(/\B\S+/g,s=>s.toLowerCase());
+    const s=(res.titulo||'').match(/(\d+º\s*ANO)/i); if(!d.serie && s) d.serie=s[1].toLowerCase();
+    render(); toast(`${total(d)} perguntas em ${d.partes.length} partes`);
+  };
+  $app.querySelectorAll('[data-rp]').forEach(b=>b.onclick=()=>{lerCampos();d.partes.splice(+b.dataset.rp,1);render();});
+  $app.querySelectorAll('[data-rq]').forEach(b=>b.onclick=()=>{lerCampos();const [pi,qi]=b.dataset.rq.split('_').map(Number);d.partes[pi].perguntas.splice(qi,1);render();});
+  $app.querySelectorAll('[data-aq]').forEach(b=>b.onclick=()=>{lerCampos();d.partes[+b.dataset.aq].perguntas.push({p:'',r:''});render();});
+  $app.querySelectorAll('[data-ia]').forEach(b=>b.onclick=()=>{lerCampos();maisPerguntasIA(d,+b.dataset.ia,b);});
+  document.getElementById('addparte').onclick=()=>{lerCampos();d.partes.push({nome:'Nova parte',emoji:'',perguntas:[{p:'',r:''}]});render();};
+  document.getElementById('salvar').onclick=async e=>{
+    lerCampos();
+    d.partes.forEach(p=>p.perguntas=p.perguntas.filter(q=>q.p));
+    d.partes=d.partes.filter(p=>p.perguntas.length);
+    if(!d.titulo){ toast('Dê um nome para a revisão'); return; }
+    if(!d.partes.length){ toast('A revisão precisa de pelo menos uma pergunta'); return; }
+    e.target.disabled=true;
+    try{ await salvar(d); toast('Revisão salva'); S={view:'home'}; render(); window.scrollTo(0,0); }
+    catch(err){ e.target.disabled=false; toast(err&&err.code==='invalid_argument'?'Você só pode estudar esta revisão, não alterar':'Não foi possível salvar. Tente de novo.'); }
+  };
+  const ap=document.getElementById('apagar'); if(ap) ap.onclick=()=>{lerCampos();S.confirmar=true;render();};
+  const nao=document.getElementById('nao'); if(nao) nao.onclick=()=>{lerCampos();S.confirmar=false;render();};
+  const sim=document.getElementById('sim'); if(sim) sim.onclick=async()=>{ try{ await apagar(d.id); toast('Revisão apagada'); S={view:'home'}; render(); }catch(e){ toast('Não foi possível apagar'); } };
+}
+
+/* ---------- CHAT ---------- */
+let conversa=[]; // {role, content, foto?}
+try{ conversa=JSON.parse(localStorage.getItem('revisoes-chat')||'[]'); }catch(e){ conversa=[]; }
+function gravarChat(){ try{ localStorage.setItem('revisoes-chat', JSON.stringify(conversa.slice(-60).map(m=>({role:m.role,content:m.content})))); }catch(e){} }
+let chatFotos=[], chatCtrl=null, chatRespondendo=false;
+function md(t){
+  let h=esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*(?!\s)(.+?)\*/g,'$1<i>$2</i>');
+  const out=[]; let lista=null;
+  h.split('\n').forEach(l=>{
+    const m=l.match(/^\s*(?:[-•*]|\d+[.)])\s+(.*)/);
+    if(m){ if(!lista){lista=[];} lista.push('<li>'+m[1]+'</li>'); return; }
+    if(lista){ out.push('<ul>'+lista.join('')+'</ul>'); lista=null; }
+    const t2=l.replace(/^#{1,4}\s+(.*)/,'<b>$1</b>');
+    if(t2.trim()) out.push('<p>'+t2+'</p>');
+  });
+  if(lista) out.push('<ul>'+lista.join('')+'</ul>');
+  return out.join('');
+}
+const SUGS=['Explica frações de um jeito fácil para uma criança','Me ajuda a montar uma rotina de estudos para a semana','Cria 5 perguntas sobre o sistema solar','Corrige este texto da redação'];
+function telaChat(){
+  const podeFoto=!!(sampleLimites&&sampleLimites.images);
+  $app.innerHTML=`
+    <div class="top"><div><div class="label">Revisões App</div><h1>Chat <span class="mark">IA</span></h1></div>
+      ${conversa.length?'<button class="ghost" id="novaConv">Nova conversa</button>':''}</div>
+    <div class="chat" id="chat">
+      ${conversa.length?conversa.map((m,i)=>`<div class="msg ${m.role==='user'?'u':'a'}">${m.fotoUrl?`<img src="${esc(m.fotoUrl)}" alt="Foto enviada">`:''}${m.role==='user'?esc(m.content):(m.content?md(m.content):'<span class="muted">Pensando…</span>')}</div>`).join(''):
+      `<div class="empty"><h3>Pergunte qualquer coisa</h3><p class="muted" style="margin:0">Dúvidas da tarefa, explicações, resumos, redação. A IA responde aqui, como numa conversa.</p>
+        <div class="sugs">${SUGS.map(s=>`<button class="sug">${esc(s)}</button>`).join('')}</div></div>`}
+    </div>
+    <div class="composer">
+      ${chatFotos.length?`<span class="small muted">📷 ${chatFotos.length} foto(s) anexada(s) · <button class="link small" id="tiraFoto">remover</button></span>`:''}
+      <div class="row">
+        ${podeFoto?`<label class="btn ghost iconbtn" style="cursor:pointer;background:var(--surface);border:2px solid var(--line);color:var(--ink)" title="Anexar foto" aria-label="Anexar foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><input type="file" id="chatFoto" accept="image/*" hidden></label>`:''}
+        <textarea id="chatIn" rows="1" placeholder="Escreva sua pergunta…"></textarea>
+        ${chatRespondendo?`<button class="iconbtn danger" id="parar" aria-label="Parar"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>`
+          :`<button class="iconbtn" id="enviar" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`}
+      </div>
+    </div>`;
+  const ta=document.getElementById('chatIn');
+  try{ ta.value=sessionStorage.getItem('revisoes-rascunho')||''; }catch(e){}
+  const ajusta=()=>{ ta.style.height='auto'; ta.style.height=Math.min(ta.scrollHeight,160)+'px'; try{sessionStorage.setItem('revisoes-rascunho',ta.value);}catch(e){} };
+  ta.oninput=ajusta; ajusta();
+  ta.onkeydown=e=>{ if(e.key==='Enter' && !e.shiftKey && window.matchMedia('(pointer:fine)').matches){ e.preventDefault(); enviarChat(); } };
+  const en=document.getElementById('enviar'); if(en) en.onclick=enviarChat;
+  const pa=document.getElementById('parar'); if(pa) pa.onclick=()=>chatCtrl&&chatCtrl.abort();
+  const nc=document.getElementById('novaConv'); if(nc) nc.onclick=()=>{ if(chatCtrl) chatCtrl.abort(); conversa=[]; gravarChat(); render(); };
+  const cf=document.getElementById('chatFoto'); if(cf) cf.onchange=e=>{ chatFotos=[...e.target.files].slice(0,1); render(); };
+  const tf=document.getElementById('tiraFoto'); if(tf) tf.onclick=()=>{ chatFotos=[]; render(); };
+  $app.querySelectorAll('.sug').forEach(b=>b.onclick=()=>{ ta.value=b.textContent; enviarChat(); });
+}
+async function enviarChat(){
+  const ta=document.getElementById('chatIn'); const txt=(ta.value||'').trim();
+  if(chatRespondendo) return;
+  if(!txt && !chatFotos.length) return;
+  const sp=await getSample(); if(!sp){ toast('Ative a IA em Configurações.'); return; }
+  const fotos=chatFotos; chatFotos=[];
+  const msgU={role:'user',content:txt||'O que tem nesta foto?'}; if(fotos.length) msgU.fotoUrl=URL.createObjectURL(fotos[0]);
+  conversa.push(msgU); const msgA={role:'assistant',content:''}; conversa.push(msgA);
+  try{ sessionStorage.removeItem('revisoes-rascunho'); }catch(e){}
+  chatRespondendo=true; render(); window.scrollTo(0,document.body.scrollHeight);
+  const hist=conversa.slice(0,-1).slice(-20).map(m=>({role:m.role,content:m.content||'…'}));
+  while(hist.length && hist[0].role!=='user') hist.shift();
+  hist[0]={role:'user',content:'(Instruções: você é a IA do Revisões App, um assistente da família. Responda em português do Brasil, de forma clara, amigável e direta. Quando a pergunta for de escola, explique de um jeito que uma criança entenda. Use listas curtas quando ajudar.)\n\n'+hist[0].content};
+  chatCtrl=new AbortController();
+  let ultimo=0;
+  try{
+    const opts={signal:chatCtrl.signal,cache:false,modelTier:'default',onText:({text})=>{ msgA.content=text; const now=Date.now(); if(now-ultimo>120 && S.view==='chat'){ ultimo=now; const bs=$app.querySelectorAll('.msg.a'); const el=bs[bs.length-1]; if(el){ el.innerHTML=md(text); } } }};
+    if(fotos.length) opts.images=fotos;
+    const r=await sp(hist,opts);
+    msgA.content=r.text||msgA.content;
+  }catch(e){
+    if(e&&e.code==='cancelled'){ if(!msgA.content) msgA.content='(resposta interrompida)'; }
+    else { msgA.content=(e&&e.text)||''; if(!msgA.content){ conversa.pop(); } toast(erroIA(e)); }
+  }
+  chatRespondendo=false; chatCtrl=null; gravarChat();
+  if(S.view==='chat'){ render(); window.scrollTo(0,document.body.scrollHeight); }
+}
+
+/* ---------- SLIDES ---------- */
+let decks=[], decksCarregados=false;
+function lerDecksLocal(){ try{ return JSON.parse(localStorage.getItem('revisoes-slides')||'[]'); }catch(e){ return []; } }
+function gravarDecksLocal(){ try{ localStorage.setItem('revisoes-slides', JSON.stringify(decks)); }catch(e){} }
+async function salvarDeck(d){
+  d.atualizadaEm=new Date().toISOString();
+  if(!d.id) d.id='s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  const {id,...corpo}=d;
+  if(db && !modoLocal) await db.collection('slides').doc(id).set(JSON.parse(JSON.stringify(corpo)));
+  else { const i=decks.findIndex(x=>x.id===id); if(i>=0) decks[i]=d; else decks.push(d); gravarDecksLocal(); }
+  return id;
+}
+async function apagarDeck(id){
+  if(db && !modoLocal) await db.collection('slides').doc(id).delete();
+  else { decks=decks.filter(x=>x.id!==id); gravarDecksLocal(); }
+}
+function slideHTML(s,i,n,capa){
+  if(capa) return `<div class="slide capa"><div class="bar"></div>${s.emoji?`<div class="em">${esc(s.emoji)}</div>`:''}<h2>${esc(s.titulo)}</h2>${s.sub?`<div style="font-size:3cqw;font-weight:700;opacity:.9">${esc(s.sub)}</div>`:''}<div class="num">${i+1} / ${n}</div></div>`;
+  return `<div class="slide"><div class="bar"></div><div style="display:flex;gap:2cqw;align-items:center">${s.emoji?`<span class="em" style="font-size:5cqw">${esc(s.emoji)}</span>`:''}<h2>${esc(s.titulo)}</h2></div>
+    <ul>${(s.topicos||[]).map(t=>`<li>${esc(t)}</li>`).join('')}</ul>${s.destaque?`<div class="dest">${esc(s.destaque)}</div>`:''}<div class="num">${i+1} / ${n}</div></div>`;
+}
+function todosSlides(d){ return [{titulo:d.titulo,emoji:d.emoji||'',sub:[d.materia,d.serie].filter(Boolean).join(' · '),capa:true},...(d.slides||[])]; }
+function slidesHome(){
+  const f=S.f||(S.f={tema:'',serie:'',qtd:'8',conteudo:''});
+  const ord=[...decks].sort((a,b)=>(b.atualizadaEm||'').localeCompare(a.atualizadaEm||''));
+  $app.innerHTML=`
+    <div><div class="label">Revisões App</div><h1>Slides com <span class="mark">IA</span></h1></div>
+    ${podeEscrever?`<div class="box">
+      <label class="f">Tema da apresentação<input type="text" id="sTema" value="${esc(f.tema)}" placeholder="Ex.: Ciclo da água; Independência do Brasil"></label>
+      <div class="grid2">
+        <label class="f">Para quem?<input type="text" id="sSerie" value="${esc(f.serie)}" placeholder="Ex.: 6º ano; reunião do escritório"></label>
+        <label class="f">Quantos slides?<input type="text" id="sQtd" inputmode="numeric" value="${esc(f.qtd)}"></label>
+      </div>
+      <label class="f">O que não pode faltar <span class="muted small" style="font-weight:600">(opcional)</span><textarea id="sConteudo" rows="3" placeholder="Cole o conteúdo ou os pontos que a apresentação precisa ter.">${esc(f.conteudo)}</textarea></label>
+      <button id="sGerar">✨ Criar slides</button>
+      <div id="sStatus" class="small muted" hidden></div>
+    </div>`:''}
+    <h2>Minhas apresentações</h2>
+    <div class="list">
+      ${!decksCarregados?'<div class="empty"><p class="muted">Carregando…</p></div>':
+      ord.length?ord.map(d=>{const all=todosSlides(d);return `<article class="rev">
+        <button class="thumb" data-ver="${esc(d.id)}" aria-label="Abrir ${esc(d.titulo)}"><div class="stage">${slideHTML(all[0],0,all.length,true)}</div></button>
+        <div class="meta"><span class="chip">${all.length} slides</span>${d.serie?`<span class="chip">${esc(d.serie)}</span>`:''}</div>
+        <div class="row"><button data-ver="${esc(d.id)}">Abrir</button></div></article>`;}).join(''):
+      '<div class="empty"><h3>Nenhuma apresentação ainda</h3><p class="muted" style="margin:0">Escreva um tema acima e a IA monta os slides.</p></div>'}
+    </div>`;
+  $app.querySelectorAll('[data-ver]').forEach(b=>b.onclick=()=>{ const d=decks.find(x=>x.id===b.dataset.ver); if(!d) return; S={view:'slidesVer',deck:d,i:0,confirmar:false}; render(); window.scrollTo(0,0); });
+  const g=document.getElementById('sGerar'); if(!g) return;
+  g.onclick=async()=>{
+    f.tema=document.getElementById('sTema').value.trim(); f.serie=document.getElementById('sSerie').value.trim(); f.qtd=document.getElementById('sQtd').value.trim(); f.conteudo=document.getElementById('sConteudo').value.trim();
+    if(!f.tema && !f.conteudo){ toast('Escreva o tema da apresentação'); return; }
+    const sp=await getSample(); if(!sp){ toast('Ative a IA em Configurações.'); return; }
+    const n=Math.min(Math.max(parseInt(f.qtd)||8,3),25);
+    const st=document.getElementById('sStatus'); st.hidden=false; st.textContent='Criando os slides…'; g.disabled=true;
+    const prompt=`Monte uma apresentação de slides em português do Brasil.
+Tema: ${f.tema||'(veja o conteúdo)'}
+Público: ${f.serie||'geral'}
+Quantidade de slides de conteúdo (sem contar a capa): ${n}
+${f.conteudo?'Pontos obrigatórios:\n'+f.conteudo:''}
+
+Regras:
+- Conteúdo correto e adequado ao público. Se for escolar, siga o que se ensina no Brasil (BNCC).
+- Cada slide: título curto, de 3 a 5 tópicos com no máximo 12 palavras cada, e um "destaque" de uma frase (curiosidade, dica ou ideia principal).
+- Uma sequência lógica: introdução, desenvolvimento e um slide final de resumo ("Resumindo").
+- Um emoji que combine com cada slide.
+
+Responda SOMENTE com JSON: {"titulo":"...","emoji":"...","materia":"...","serie":"...","slides":[{"titulo":"...","emoji":"...","topicos":["...","..."],"destaque":"..."}]}`;
+    try{
+      const res=await sp.json(prompt,{modelTier:'default',onText:({text})=>{ st.textContent=`Criando os slides… ${(text.match(/"topicos"/g)||[]).length} prontos`; }});
+      const d={titulo:String(res.titulo||f.tema).trim(),emoji:String(res.emoji||''),materia:String(res.materia||''),serie:String(res.serie||f.serie),
+        slides:(res.slides||[]).filter(s=>s&&s.titulo).map(s=>({titulo:String(s.titulo),emoji:String(s.emoji||''),topicos:(s.topicos||[]).map(String),destaque:String(s.destaque||'')}))};
+      if(!d.slides.length) throw {code:'invalid_json'};
+      await salvarDeck(d); S={view:'slidesVer',deck:d,i:0,confirmar:false}; f.tema=''; f.conteudo='';
+      render(); window.scrollTo(0,0); toast(`${d.slides.length+1} slides criados`);
+    }catch(err){ g.disabled=false; st.textContent=erroIA(err); }
+  };
+}
+function slidesVer(){
+  const d=S.deck, all=todosSlides(d), n=all.length; S.i=Math.min(S.i,n-1);
+  $app.innerHTML=`
+    <button class="link" id="sVolta">← Minhas apresentações</button>
+    <h2>${esc(d.titulo)}</h2>
+    <div class="stage" id="stage" tabindex="0" aria-label="Slide ${S.i+1} de ${n}">${slideHTML(all[S.i],S.i,n,S.i===0)}</div>
+    <div class="row"><button class="ghost" id="ant" ${S.i===0?'disabled':''}>← Anterior</button><span class="muted small" style="font-variant-numeric:tabular-nums">${S.i+1} de ${n}</span><button id="prox" ${S.i===n-1?'disabled':''} style="margin-left:auto">Próximo →</button></div>
+    <div class="row"><button class="ghost" id="tela">Tela cheia</button>${podeEscrever?'<button class="ghost" id="virarRev">✨ Virar revisão</button>':''}</div>
+    <div class="thumbs">${all.map((s,i)=>`<button class="thumb" data-i="${i}" aria-current="${i===S.i}" aria-label="Slide ${i+1}"><div class="stage">${slideHTML(s,i,n,i===0)}</div></button>`).join('')}</div>
+    ${podeEscrever?(S.confirmar?`<div class="confirm"><b>Apagar “${esc(d.titulo)}” de vez?</b><div class="row"><button class="danger" id="sim">Apagar</button><button class="ghost" id="nao">Cancelar</button></div></div>`:'<button class="link" id="apagarDeck" style="color:var(--bad);align-self:flex-start">Apagar esta apresentação</button>'):''}`;
+  const go=i=>{ S.i=Math.max(0,Math.min(n-1,i)); const st=document.getElementById('stage'); st.innerHTML=slideHTML(all[S.i],S.i,n,S.i===0);
+    if(!document.fullscreenElement) render(); };
+  document.getElementById('sVolta').onclick=()=>{ S={view:'slidesHome'}; render(); };
+  document.getElementById('ant').onclick=()=>go(S.i-1);
+  document.getElementById('prox').onclick=()=>go(S.i+1);
+  $app.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>go(+b.dataset.i));
+  const stage=document.getElementById('stage');
+  stage.onclick=e=>{ const r=stage.getBoundingClientRect(); go(S.i+((e.clientX-r.left)<r.width/3?-1:1)); };
+  let x0=null; stage.ontouchstart=e=>{x0=e.touches[0].clientX;}; stage.ontouchend=e=>{ if(x0===null) return; const dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)>40){ e.preventDefault(); go(S.i+(dx<0?1:-1)); } };
+  document.onkeydown=e=>{ if(S.view!=='slidesVer') return; if(e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); go(S.i+1);} if(e.key==='ArrowLeft') go(S.i-1); };
+  document.getElementById('tela').onclick=()=>{ const p=stage.requestFullscreen?stage.requestFullscreen():null; if(p&&p.catch) p.catch(()=>toast('Tela cheia não está disponível aqui. Vire o celular de lado.')); if(!p) toast('Tela cheia não está disponível aqui. Vire o celular de lado.'); };
+  stage.onfullscreenchange=()=>{ if(!document.fullscreenElement) render(); };
+  const vr=document.getElementById('virarRev'); if(vr) vr.onclick=()=>{
+    aba='revisoes'; viewsPorAba.slides=S;
+    S={view:'ia',f:{assunto:d.titulo,serie:d.serie||'',qtd:'15',tipo:'misto',conteudo:'Baseie a revisão nesta apresentação:\n'+d.slides.map(s=>s.titulo+': '+s.topicos.join('; ')+(s.destaque?' ('+s.destaque+')':'')).join('\n')},fotos:[]};
+    render(); window.scrollTo(0,0);
+  };
+  const ap=document.getElementById('apagarDeck'); if(ap) ap.onclick=()=>{S.confirmar=true;render();};
+  const nao=document.getElementById('nao'); if(nao) nao.onclick=()=>{S.confirmar=false;render();};
+  const sim=document.getElementById('sim'); if(sim) sim.onclick=async()=>{ try{ await apagarDeck(d.id); toast('Apresentação apagada'); S={view:'slidesHome'}; render(); }catch(e){ toast('Não foi possível apagar'); } };
+}
+
+/* ---------- arranque ---------- */
+const INICIAL = {"titulo": "Revisão de Português", "materia": "Português", "serie": "6º ano", "subtitulo": "Perguntas e respostas para estudar com a mãe", "partes": [{"nome": "PARTE 1 — VERBOS E CONJUGAÇÕES", "emoji": "🟢", "perguntas": [{"p": "O que é um verbo?", "r": "É uma palavra que pode indicar ação, estado ou fenômeno da natureza."}, {"p": "Quais são as três conjugações verbais?", "r": "• 1ª conjugação: verbos terminados em -AR.\n• 2ª conjugação: verbos terminados em -ER.\n• 3ª conjugação: verbos terminados em -IR."}, {"p": "O verbo CANTAR pertence a qual conjugação?", "r": "Primeira conjugação (-AR)."}, {"p": "O verbo VENDER pertence a qual conjugação?", "r": "Segunda conjugação (-ER)."}, {"p": "O verbo PARTIR pertence a qual conjugação?", "r": "Terceira conjugação (-IR)."}, {"p": "Qual é o infinitivo do verbo “estudando”?", "r": "Estudar."}, {"p": "Qual é o infinitivo do verbo “comemos”?", "r": "Comer."}, {"p": "Conjugue o verbo AMAR no presente do indicativo.", "r": "• Eu amo.\n• Tu amas.\n• Ele/ela ama.\n• Nós amamos.\n• Vós amais.\n• Eles/elas amam."}, {"p": "Conjugue o verbo COMER no presente do indicativo.", "r": "• Eu como.\n• Tu comes.\n• Ele/ela come.\n• Nós comemos.\n• Vós comeis.\n• Eles/elas comem."}, {"p": "Conjugue o verbo PARTIR no presente do indicativo.", "r": "• Eu parto.\n• Tu partes.\n• Ele/ela parte.\n• Nós partimos.\n• Vós partis.\n• Eles/elas partem."}, {"p": "Complete: “Ontem, eu ______ futebol.” (jogar)", "r": "Joguei."}, {"p": "Complete: “Amanhã, nós ______ para a escola.” (estudar)", "r": "Estudaremos."}, {"p": "Qual é o verbo da frase: “Pedro correu no parque”?", "r": "Correu."}, {"p": "Na frase “As crianças brincam no recreio”, quem pratica a ação?", "r": "As crianças."}]}, {"nome": "PARTE 2 — MODO INDICATIVO", "emoji": "🔵", "perguntas": [{"p": "Para que usamos o modo indicativo?", "r": "Para expressar fatos e acontecimentos apresentados como reais ou certos."}, {"p": "Na frase “Eu estudo todos os dias”, qual é o modo verbal?", "r": "Indicativo."}, {"p": "Na frase “Maria viajou ontem”, o verbo está em qual tempo?", "r": "Pretérito perfeito do indicativo."}, {"p": "Na frase “Eu estudarei amanhã”, o verbo está em qual tempo?", "r": "Futuro do presente do indicativo."}, {"p": "Complete com o presente do indicativo do verbo ESTUDAR: “Eu ______ português.”", "r": "Estudo."}, {"p": "Passe para o passado: “Eu jogo bola.”", "r": "Eu joguei bola."}, {"p": "Passe para o futuro: “Pedro faz a tarefa.”", "r": "Pedro fará a tarefa."}, {"p": "Qual frase apresenta um verbo no modo indicativo?", "r": "C) Eu estudo português.", "opcoes": ["A) Talvez eu viaje.", "B) Feche a porta!", "C) Eu estudo português.", "D) Espero que ele venha."]}, {"p": "Identifique o verbo e o tempo verbal: “Nós brincávamos na rua.”", "r": "Verbo: brincávamos. Tempo: pretérito imperfeito do indicativo."}]}, {"nome": "PARTE 3 — MODO SUBJUNTIVO", "emoji": "🟡", "perguntas": [{"p": "Para que usamos o modo subjuntivo?", "r": "Para expressar dúvida, desejo, possibilidade ou hipótese."}, {"p": "Qual frase apresenta um verbo no subjuntivo?", "r": "B) Talvez ele chegue cedo.", "opcoes": ["A) Eu estudei ontem.", "B) Talvez ele chegue cedo.", "C) Faça a tarefa!", "D) Nós jogamos futebol."]}, {"p": "Complete: “Espero que você ______ bem na prova.” (ir)", "r": "Vá."}, {"p": "Complete: “Talvez ele ______ à festa.” (ir)", "r": "Vá."}, {"p": "Complete: “Se eu ______ mais tempo, estudaria mais.” (ter)", "r": "Tivesse."}, {"p": "Identifique o verbo no subjuntivo: “Espero que você consiga a vaga.”", "r": "Consiga."}, {"p": "Complete: “Tomara que amanhã ______ sol.” (fazer)", "r": "Faça."}, {"p": "Qual expressão indica possibilidade ou dúvida?", "r": "B) Talvez.", "opcoes": ["A) Com certeza.", "B) Talvez.", "C) Ontem.", "D) Agora mesmo."]}, {"p": "Na frase “Se eu estudasse, tiraria uma nota melhor”, qual é o verbo no subjuntivo?", "r": "Estudasse."}]}, {"nome": "PARTE 4 — MODO IMPERATIVO", "emoji": "🔴", "perguntas": [{"p": "Para que usamos o modo imperativo?", "r": "Para dar ordens, fazer pedidos, dar conselhos ou instruções."}, {"p": "Qual frase está no modo imperativo?", "r": "C) Estude para a prova!", "opcoes": ["A) Eu gosto de estudar.", "B) Talvez ele estude.", "C) Estude para a prova!", "D) Ele estudou ontem."]}, {"p": "Identifique o verbo no imperativo: “Feche a janela!”", "r": "Feche."}, {"p": "Complete: “______ o material antes de sair!” (guardar)", "r": "Guarde."}, {"p": "Transforme em uma ordem: “Você abre o livro.”", "r": "Abra o livro!"}, {"p": "Escreva um pedido educado usando o imperativo.", "r": "Por favor, feche a porta!"}, {"p": "Qual frase apresenta um conselho?", "r": "B) Durma mais cedo!", "opcoes": ["A) Você dormiu cedo.", "B) Durma mais cedo!", "C) Talvez você durma cedo.", "D) Você dorme cedo."]}, {"p": "Na frase “Não corra no corredor!”, qual é o modo verbal?", "r": "Imperativo."}]}, {"nome": "PARTE 5 — FRASE, ORAÇÃO E PERÍODO", "emoji": "🟣", "perguntas": [{"p": "O que é uma frase?", "r": "É um enunciado com sentido completo, com ou sem verbo."}, {"p": "O que é uma oração?", "r": "É um enunciado organizado em torno de um verbo ou de uma locução verbal."}, {"p": "O que é um período?", "r": "É um enunciado formado por uma ou mais orações."}, {"p": "A expressão “Que lindo!” é uma frase?", "r": "Sim. É uma frase sem verbo."}, {"p": "A frase “O menino correu” tem quantas orações?", "r": "Uma oração."}, {"p": "A frase “Maria estudou e Pedro brincou” tem quantas orações?", "r": "Duas orações."}, {"p": "O período simples apresenta quantas orações?", "r": "Uma oração."}, {"p": "O período composto apresenta quantas orações?", "r": "Duas ou mais orações."}, {"p": "Classifique: “João dormiu.”", "r": "Período simples, com uma oração."}, {"p": "Classifique: “João dormiu e Maria acordou.”", "r": "Período composto, com duas orações."}, {"p": "Quantas orações existem em “Quando cheguei, minha mãe preparava o almoço”?", "r": "Duas orações."}, {"p": "A expressão “Bom dia!” é uma frase com verbo ou sem verbo?", "r": "Sem verbo."}, {"p": "Quantos verbos aparecem em “Pedro correu e Maria pulou”?", "r": "Dois verbos: correu e pulou."}, {"p": "A frase “Eu quero brincar” apresenta quantas orações?", "r": "Uma oração (formada por locução verbal/verbo auxiliar modal)."}]}, {"nome": "PARTE 6 — DESAFIO FINAL", "emoji": "🏆", "perguntas": [{"p": "Na frase “Talvez Arthur viaje amanhã”, qual é o modo verbal?", "r": "Subjuntivo."}, {"p": "Na frase “Faça a atividade agora!”, qual é o modo verbal?", "r": "Imperativo."}, {"p": "Na frase “Eu estudo todas as tardes”, qual é o modo verbal?", "r": "Indicativo."}, {"p": "O verbo “vender” pertence a qual conjugação?", "r": "Segunda conjugação (-ER)."}, {"p": "Complete: “Espero que você ______ à festa.” (ir)", "r": "Vá."}, {"p": "Complete: “Se eu ______ mais, tiraria uma nota melhor.” (estudar)", "r": "Estudasse."}, {"p": "Complete: “Ontem, nós ______ futebol.” (jogar)", "r": "Jogamos."}, {"p": "Complete: “______ o enunciado com atenção!” (ler)", "r": "Leia."}, {"p": "Na frase “O bebê chorou porque estava com fome”, quantas orações existem?", "r": "Duas orações: “O bebê chorou” e “porque estava com fome”."}, {"p": "Qual é a diferença entre indicativo e subjuntivo?", "r": "O indicativo apresenta fatos como reais ou certos; o subjuntivo expressa dúvida, desejo, possibilidade ou hipótese."}, {"p": "Qual é a diferença entre imperativo e indicativo?", "r": "O imperativo dá ordens, faz pedidos, dá conselhos ou instruções; o indicativo apresenta fatos ou acontecimentos."}]}], "atualizadaEm": "2026-10-26T15:47:47.021Z", "id": "portugues-6ano-verbos"};
+modoLocal=true; podeEscrever=true; db=null;
+(function(){
+  let ja=null; try{ ja=localStorage.getItem('revisoes-app'); }catch(e){}
+  revisoes = ja ? lerLocal() : [INICIAL]; if(!ja) gravarLocal();
+  carregado=true; decks=lerDecksLocal(); decksCarregados=true; render();
+})();
+document.getElementById('gear').onclick=()=>{ if(aba==='config') return; S={view:'config',voltar:{aba,S}}; aba='config'; render(); window.scrollTo(0,0); };
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+</script>
+
+</body>
+</html>
