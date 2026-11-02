@@ -1,7 +1,7 @@
 // Função do servidor (Vercel): POST /api/ia
-import { ErroAcesso, verificarAcesso } from '../lib/ia/acesso';
-import { ErroIA, conversar, gerarJson } from '../lib/ia/provedores';
-import { LIMITE_TEXTO, SISTEMA_CHAT, TAREFAS, type MensagemChat, type Tarefa } from '../lib/ia/tarefas';
+import { ErroAcesso, verificarAcesso } from '../lib/ia/acesso.js';
+import { ErroIA, conversar, gerarJson } from '../lib/ia/provedores.js';
+import { LIMITE_TEXTO, SISTEMA_CHAT, TAREFAS, type MensagemChat, type Tarefa } from '../lib/ia/tarefas.js';
 
 interface Pedido {
   tarefa?: Tarefa;

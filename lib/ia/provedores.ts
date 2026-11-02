@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import type { Esquema, MensagemChat } from './tarefas';
+import type { Esquema, MensagemChat } from './tarefas.js';
 
 export class ErroIA extends Error {
   constructor(
