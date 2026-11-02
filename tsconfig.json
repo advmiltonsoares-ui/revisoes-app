@@ -23,7 +23,6 @@
   "include": [
     "src",
     "api",
-    "lib",
     "vite.config.ts"
   ]
 }
