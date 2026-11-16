@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#b5502a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Quiz África">
+<link rel="manifest" href="/quiz-africa/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/quiz-africa/icone-180.png">
+<link rel="icon" href="/quiz-africa/icone-192.png">
+<title>Quiz — África, Povos Bantu e Capoeira</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --terra:#b5502a; --ocre:#e0a030; --verde:#2f7d4f; --noite:#2a1a12; --areia:#fbf3e4; --creme:#fffaf0;
+  --certo:#2f9e5b; --errado:#c9372c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--areia);color:var(--noite);min-height:100vh}
+.kente{height:12px;background:repeating-linear-gradient(90deg,#e0a030 0 18px,#2f7d4f 18px 26px,#c9372c 26px 34px,#2a1a12 34px 38px,#e0a030 38px 56px,#1f4e8c 56px 62px)}
+.wrap{max-width:640px;margin:0 auto;padding:16px 16px 40px}
+h1,h2,.btn,.tag{font-family:'Baloo 2',cursive}
+.card{background:var(--creme);border-radius:22px;box-shadow:0 6px 0 rgba(42,26,18,.12),0 10px 30px rgba(42,26,18,.08);overflow:hidden}
+.scene{width:100%;display:block;aspect-ratio:360/210;background:#f6d9a8}
+.body{padding:18px 18px 22px}
+h1{font-size:30px;line-height:1.05;color:var(--terra);margin-bottom:8px}
+.sub{font-size:16px;line-height:1.45;margin-bottom:16px}
+.temas{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.tag{font-size:14px;padding:4px 12px;border-radius:99px;color:#fff;font-weight:700}
+.t0{background:var(--verde)}.t1{background:var(--terra)}.t2{background:#1f4e8c}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:14px;font-size:20px;font-weight:800;cursor:pointer;background:var(--terra);color:#fff;box-shadow:0 4px 0 #7d3219;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #7d3219}
+.btn.sec{background:#fff;color:var(--terra);box-shadow:0 4px 0 #e2c9a8;border:2px solid #e9d3b4;margin-top:10px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px}
+.prog{flex:1;height:12px;background:#ead8bb;border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--verde),var(--ocre));transition:width .3s}
+.num{font-family:'Baloo 2';font-weight:800;font-size:16px;white-space:nowrap}
+.pts{font-family:'Baloo 2';font-weight:800;font-size:16px;color:var(--verde);white-space:nowrap}
+h2{font-size:22px;line-height:1.2;margin:4px 0 14px}
+.ops{display:grid;gap:10px}
+.op{text-align:left;font:600 17px 'Nunito';padding:13px 14px;border-radius:14px;border:2px solid #e9d3b4;background:#fff;cursor:pointer;display:flex;gap:10px;align-items:center;color:var(--noite)}
+.op b{font-family:'Baloo 2';display:inline-grid;place-items:center;min-width:30px;height:30px;border-radius:50%;background:#f3e3c7;color:var(--terra)}
+.op:disabled{cursor:default}
+.op.ok{border-color:var(--certo);background:#e5f6ec}.op.ok b{background:var(--certo);color:#fff}
+.op.no{border-color:var(--errado);background:#fbe7e4}.op.no b{background:var(--errado);color:#fff}
+.fb{margin-top:14px;padding:14px;border-radius:14px;font-size:16px;line-height:1.45;display:none}
+.fb.show{display:block}
+.fb.ok{background:#e5f6ec;border-left:6px solid var(--certo)}
+.fb.no{background:#fbe7e4;border-left:6px solid var(--errado)}
+.fb strong{font-family:'Baloo 2';font-size:19px;display:block;margin-bottom:2px}
+#next{margin-top:14px;display:none}
+.big{font-family:'Baloo 2';font-size:64px;font-weight:800;color:var(--terra);text-align:center;line-height:1}
+.msg{text-align:center;font-size:18px;margin:8px 0 16px}
+.parc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.parc div{background:#fff;border-radius:14px;padding:10px 6px;text-align:center;border:2px solid #efe0c6;font-size:13px;font-weight:700}
+.parc span{display:block;font-family:'Baloo 2';font-size:24px}
+.rev{margin-top:6px}
+.rev h3{font-family:'Baloo 2';font-size:19px;margin:10px 0 8px}
+.rev .it{background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:8px;border-left:5px solid var(--errado);font-size:15px;line-height:1.4}
+.rev .it em{color:var(--certo);font-style:normal;font-weight:700}
+.foot{text-align:center;font-size:12px;color:#8a6a50;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="kente"></div>
+<div class="wrap"><div class="card" id="app"></div>
+<div class="foot">Ilustrações desenhadas para este quiz</div></div>
+<div class="kente"></div>
+
+<script>
+/* ---------- desenho de figuras humanas (silhuetas) ---------- */
+function fig(ox,oy,s,p,c,mirror){
+  c=c||'#2a1a12';
+  const T=(pt)=>{let x=pt[0];if(mirror)x=-x;return [ox+x*s,oy+pt[1]*s]};
+  const L=(a,b,w)=>{const A=T(a),B=T(b);return `<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" stroke="${c}" stroke-width="${w*s}" stroke-linecap="round"/>`};
+  let g='';
+  g+=L(p.n,p.h,13);
+  g+=L(p.n,p.le,7)+L(p.le,p.lh,6)+L(p.n,p.re,7)+L(p.re,p.rh,6);
+  g+=L(p.h,p.lk,10)+L(p.lk,p.lf,8)+L(p.h,p.rk,10)+L(p.rk,p.rf,8);
+  const H=T(p.hd);g+=`<circle cx="${H[0]}" cy="${H[1]}" r="${9*s}" fill="${c}"/>`;
+  return g;
+}
+const P={
+  ginga:{hd:[-4,-62],n:[-2,-48],h:[4,-14],le:[14,-40],lh:[8,-56],re:[-18,-38],rh:[-30,-30],lk:[-12,4],lf:[-26,26],rk:[20,6],rf:[22,28]},
+  meialua:{hd:[-14,-58],n:[-10,-44],h:[2,-12],le:[-26,-34],lh:[-34,-20],re:[6,-38],rh:[18,-46],lk:[0,8],lf:[-2,30],rk:[24,-24],rf:[48,-36]},
+  au:{hd:[0,10],n:[0,-4],h:[0,-36],le:[-12,8],lh:[-18,24],re:[12,8],rh:[18,24],lk:[-18,-52],lf:[-34,-66],rk:[18,-52],rf:[34,-66]},
+  esquiva:{hd:[16,-28],n:[10,-22],h:[-6,-10],le:[20,-12],lh:[20,4],re:[4,-6],rh:[-4,12],lk:[-26,4],lf:[-34,26],rk:[10,10],rf:[18,28]},
+  em_pe:{hd:[0,-62],n:[0,-48],h:[0,-12],le:[-10,-30],lh:[-6,-16],re:[10,-30],rh:[6,-16],lk:[-4,8],lf:[-6,28],rk:[4,8],rf:[6,28]},
+  palma:{hd:[0,-62],n:[0,-48],h:[0,-12],le:[-10,-34],lh:[-2,-44],re:[10,-34],rh:[2,-44],lk:[-5,8],lf:[-7,28],rk:[5,8],rf:[7,28]},
+  sentado:{hd:[0,-44],n:[0,-30],h:[0,0],le:[-12,-16],lh:[-6,-4],re:[12,-16],rh:[8,-4],lk:[-16,-2],lf:[-14,14],rk:[16,-2],rf:[14,14]},
+  fala:{hd:[0,-62],n:[0,-48],h:[0,-12],le:[-12,-32],lh:[-6,-18],re:[16,-46],rh:[28,-58],lk:[-4,8],lf:[-6,28],rk:[4,8],rf:[6,28]},
+  danca:{hd:[4,-62],n:[2,-48],h:[-2,-12],le:[-16,-58],lh:[-22,-74],re:[18,-56],rh:[26,-72],lk:[-12,6],lf:[-8,28],rk:[10,4],rf:[20,26]}
+};
+/* berimbau tocado por figura */
+function berimbauista(x,y,s,c){
+  c=c||'#2a1a12';
+  let g=fig(x,y,s,{hd:[0,-62],n:[0,-48],h:[0,-12],le:[-10,-34],lh:[-6,-40],re:[12,-32],rh:[16,-38],lk:[-4,8],lf:[-6,28],rk:[4,8],rf:[6,28]},c);
+  g+=`<path d="M${x-8*s} ${y-100*s} Q${x-22*s} ${y-40*s} ${x-8*s} ${y+20*s}" stroke="#6b3f1d" stroke-width="${3*s}" fill="none"/>`;
+  g+=`<line x1="${x-8*s}" y1="${y-100*s}" x2="${x-8*s}" y2="${y+20*s}" stroke="#ccc" stroke-width="${1*s}"/>`;
+  g+=`<circle cx="${x-10*s}" cy="${y-28*s}" r="${8*s}" fill="#c8862f" stroke="#6b3f1d" stroke-width="${1.5*s}"/>`;
+  return g;
+}
+function sol(x,y,r,c){return `<circle cx="${x}" cy="${y}" r="${r}" fill="${c||'#ffcf5a'}"/>`}
+function chao(y,c){return `<rect x="0" y="${y}" width="360" height="${210-y}" fill="${c}"/>`}
+function baoba(x,y,s,c){c=c||'#3a2414';
+  return `<g fill="${c}"><path d="M${x-10*s} ${y} L${x-7*s} ${y-50*s} L${x+7*s} ${y-50*s} L${x+10*s} ${y}Z"/>
+  <path d="M${x-7*s} ${y-48*s} Q${x-26*s} ${y-62*s} ${x-34*s} ${y-58*s} M${x+7*s} ${y-48*s} Q${x+24*s} ${y-64*s} ${x+34*s} ${y-60*s} M${x} ${y-50*s} L${x+2*s} ${y-68*s}" stroke="${c}" stroke-width="${4*s}" fill="none" stroke-linecap="round"/>
+  <ellipse cx="${x-34*s}" cy="${y-62*s}" rx="${12*s}" ry="${6*s}"/><ellipse cx="${x+34*s}" cy="${y-63*s}" rx="${13*s}" ry="${6*s}"/><ellipse cx="${x+2*s}" cy="${y-72*s}" rx="${15*s}" ry="${7*s}"/></g>`}
+function girafa(x,y,s,c){c=c||'#3a2414';
+  return `<g fill="${c}" stroke="${c}" stroke-linecap="round"><ellipse cx="${x}" cy="${y-30*s}" rx="${16*s}" ry="${8*s}"/>
+  <line x1="${x+10*s}" y1="${y-34*s}" x2="${x+24*s}" y2="${y-72*s}" stroke-width="${5*s}"/>
+  <ellipse cx="${x+28*s}" cy="${y-74*s}" rx="${7*s}" ry="${3.5*s}"/>
+  <line x1="${x-12*s}" y1="${y-26*s}" x2="${x-14*s}" y2="${y}" stroke-width="${3*s}"/><line x1="${x-6*s}" y1="${y-26*s}" x2="${x-5*s}" y2="${y}" stroke-width="${3*s}"/>
+  <line x1="${x+8*s}" y1="${y-26*s}" x2="${x+9*s}" y2="${y}" stroke-width="${3*s}"/><line x1="${x+13*s}" y1="${y-28*s}" x2="${x+16*s}" y2="${y}" stroke-width="${3*s}"/></g>`}
+function oca(x,y,s){return `<g><rect x="${x-18*s}" y="${y-22*s}" width="${36*s}" height="${22*s}" fill="#b5713a"/>
+  <path d="M${x-26*s} ${y-20*s} L${x} ${y-48*s} L${x+26*s} ${y-20*s}Z" fill="#d8a64a"/>
+  <path d="M${x-26*s} ${y-20*s} L${x} ${y-48*s} L${x+26*s} ${y-20*s}" stroke="#a5772a" stroke-width="${2*s}" fill="none"/>
+  <rect x="${x-5*s}" y="${y-14*s}" width="${10*s}" height="${14*s}" rx="${5*s}" fill="#3a2414"/></g>`}
+function svg(inner,bg){return `<svg class="scene" viewBox="0 0 360 210" xmlns="http://www.w3.org/2000/svg" role="img">${bg||''}${inner}</svg>`}
+const ceuDia='<defs><linearGradient id="cd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb35c"/><stop offset="1" stop-color="#ffe2a8"/></linearGradient></defs><rect width="360" height="210" fill="url(#cd)"/>';
+const ceuTarde='<defs><linearGradient id="ct" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a2e4a"/><stop offset=".55" stop-color="#e2683a"/><stop offset="1" stop-color="#ffc061"/></linearGradient></defs><rect width="360" height="210" fill="url(#ct)"/>';
+const ceuNoite='<defs><linearGradient id="cn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1838"/><stop offset="1" stop-color="#4a2f5c"/></linearGradient></defs><rect width="360" height="210" fill="url(#cn)"/>';
+const AFRICA='M140 30 L170 22 L195 25 L215 38 L245 35 L256 58 L270 88 L302 96 L286 122 L272 140 L264 164 L256 182 L226 206 L206 200 L196 172 L190 142 L182 116 L166 106 L136 108 L112 96 L104 76 L116 54Z';
+
+const S={
+  capa:()=>svg(chao(150,'#c9883e')+sol(290,60,30,'#ffd66b')+baoba(52,152,1.1)+
+    `<ellipse cx="180" cy="168" rx="120" ry="20" fill="#a86a2c"/>`+
+    berimbauista(70,170,.8)+fig(110,172,.65,P.palma)+fig(250,172,.65,P.palma)+fig(290,170,.8,P.palma)+
+    fig(155,160,.9,P.ginga,'#2a1a12')+fig(210,160,.9,P.meialua,'#2a1a12',true),ceuTarde),
+  savana:()=>svg(chao(150,'#d39b4c')+sol(250,70,34)+baoba(90,152,1.3)+girafa(250,152,1)+girafa(300,152,.75)+
+    `<path d="M0 150 Q90 138 180 150 T360 148 V160 H0Z" fill="#b97d36"/>`,ceuDia),
+  mapa:()=>svg(`<rect width="360" height="210" fill="#5ea4c7"/><path d="${AFRICA}" fill="#e0a030" stroke="#7d3219" stroke-width="3" stroke-linejoin="round"/>
+    <ellipse cx="286" cy="172" rx="7" ry="16" fill="#e0a030" stroke="#7d3219" stroke-width="2" transform="rotate(20 286 172)"/>
+    <path d="M150 60 Q185 40 225 62 Q190 80 150 60Z" fill="#f3d79a"/><text x="186" y="64" font-size="11" text-anchor="middle" fill="#7d3219" font-family="Nunito" font-weight="700">Saara</text>
+    <path d="M246 40 Q250 70 240 95" stroke="#2a6fb0" stroke-width="3" fill="none"/><text x="236" y="80" font-size="10" fill="#1f4e8c" font-family="Nunito" font-weight="700" text-anchor="end">Nilo</text>
+    <path d="M196 120 Q215 135 225 160" stroke="#2f7d4f" stroke-width="10" fill="none" opacity=".35"/>`),
+  piramides:()=>svg(chao(160,'#e9c27a')+sol(80,60,26,'#fff1b8')+
+    `<path d="M150 160 L215 70 L280 160Z" fill="#c9923f"/><path d="M215 70 L280 160 L232 160Z" fill="#a8742c"/>
+     <path d="M70 160 L115 98 L160 160Z" fill="#d4a04f"/><path d="M115 98 L160 160 L128 160Z" fill="#b07c33"/>
+     <path d="M270 160 L300 120 L330 160Z" fill="#c9923f"/>`+
+    `<g fill="#3a2414"><ellipse cx="50" cy="152" rx="14" ry="6"/><path d="M40 150 Q45 136 52 146 Q58 132 62 148Z"/><path d="M60 148 L68 138 L72 140 L66 150Z"/><line x1="42" y1="154" x2="42" y2="164" stroke="#3a2414" stroke-width="2"/><line x1="58" y1="154" x2="58" y2="164" stroke="#3a2414" stroke-width="2"/></g>`,ceuDia),
+  grio:()=>svg(chao(160,'#3b2a1a')+`<circle cx="300" cy="40" r="14" fill="#fff7d6"/>`+
+    `<g fill="#fff">${[[40,30],[80,55],[130,22],[200,38],[250,18],[330,70]].map(a=>`<circle cx="${a[0]}" cy="${a[1]}" r="1.6"/>`).join('')}</g>`+
+    `<path d="M170 168 L180 140 L190 168Z" fill="#ffb02e"/><path d="M175 168 L180 150 L185 168Z" fill="#ffe27a"/><circle cx="180" cy="168" r="30" fill="#ff9a2e" opacity=".18"/>`+
+    fig(120,176,.9,P.fala,'#1a100a')+fig(230,178,.65,P.sentado,'#1a100a')+fig(262,180,.55,P.sentado,'#1a100a')+fig(290,178,.6,P.sentado,'#1a100a'),ceuNoite),
+  kente:()=>{let r='';const cs=['#e0a030','#2f7d4f','#c9372c','#2a1a12','#1f4e8c'];
+    for(let i=0;i<12;i++)for(let j=0;j<7;j++){const c=cs[(i+j*2)%5];r+=`<rect x="${i*30}" y="${j*30}" width="30" height="30" fill="${c}"/>`;
+      if((i+j)%2==0)r+=`<rect x="${i*30+4}" y="${j*30+12}" width="22" height="6" fill="#e0a030"/>`;else r+=`<rect x="${i*30+12}" y="${j*30+4}" width="6" height="22" fill="#fbf3e4"/>`;}
+    return svg(r)},
+  ubuntu:()=>svg(chao(160,'#c9883e')+sol(180,80,40,'#ffd66b')+
+    [60,105,150,195,240,285].map((x,i)=>fig(x+8,182,.8,P.palma,i%2?'#3a2414':'#2a1a12')).join('')+
+    `<path d="M68 145 L113 145 M113 145 L158 145 M158 145 L203 145 M203 145 L248 145 M248 145 L293 145" stroke="#2a1a12" stroke-width="4"/>`,ceuTarde),
+  consciencia:()=>svg(chao(165,'#5a3a1e')+
+    `<path d="M0 165 L40 110 L80 140 L130 90 L180 130 L230 95 L280 135 L320 105 L360 140 L360 165Z" fill="#2f5d3a"/>`+
+    `<g transform="translate(180 120)"><line x1="0" y1="45" x2="0" y2="-40" stroke="#3a2414" stroke-width="3"/><path d="M0 -40 L46 -30 L0 -18Z" fill="#c9372c"/></g>`+
+    fig(150,178,.85,P.fala)+fig(212,178,.85,P.danca),ceuDia),
+  aldeia:()=>svg(chao(150,'#c7894a')+sol(70,55,24)+oca(110,165,1.2)+oca(200,160,1)+oca(280,168,1.3)+
+    fig(160,190,.6,P.em_pe)+fig(240,192,.6,P.danca)+baoba(330,150,.7,'#4a2f1a'),ceuDia),
+  expansao:()=>svg(`<rect width="360" height="210" fill="#5ea4c7"/><path d="${AFRICA}" fill="#f0c56a" stroke="#7d3219" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="176" cy="108" r="11" fill="#c9372c"/>
+    <defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#2f7d4f"/></marker></defs>
+    <g stroke="#2f7d4f" stroke-width="4" fill="none" marker-end="url(#ar)"><path d="M182 114 Q200 140 205 180"/><path d="M186 106 Q225 105 262 118"/><path d="M184 112 Q230 140 248 172"/></g>
+    <text x="150" y="98" font-size="11" fill="#7d3219" font-family="Nunito" font-weight="800" text-anchor="end">origem</text>`),
+  rainha:()=>svg(chao(165,'#7d3219')+
+    `<rect x="120" y="40" width="120" height="125" rx="8" fill="#e0a030" opacity=".35"/>`+
+    fig(180,178,1.15,{hd:[0,-62],n:[0,-48],h:[0,-12],le:[-14,-34],lh:[-24,-20],re:[14,-34],rh:[28,-60],lk:[-5,8],lf:[-8,28],rk:[5,8],rf:[8,28]},'#1a100a')+
+    `<path d="M162 92 L168 78 L174 88 L180 74 L186 88 L192 78 L198 92Z" fill="#ffd34d"/>
+     <path d="M168 120 L192 120 L204 176 L156 176Z" fill="#c9372c"/>
+     <line x1="212" y1="112" x2="214" y2="56" stroke="#3a2414" stroke-width="3"/><path d="M214 56 L208 64 L220 64Z" fill="#888"/>`,ceuTarde),
+  zimbabue:()=>{let p='';for(let r=0;r<6;r++)for(let i=0;i<14;i++){p+=`<rect x="${40+i*20+(r%2?10:0)}" y="${150-r*12}" width="18" height="10" rx="2" fill="${(i+r)%3?'#8a7a68':'#a39380'}"/>`}
+    return svg(chao(160,'#9a6a36')+sol(300,50,22)+`<rect x="40" y="88" width="290" height="74" fill="#6e604f"/>`+p+
+    `<path d="M150 160 L150 120 Q165 104 180 120 L180 160Z" fill="#3a2a1a"/>`,ceuDia)},
+  navio:()=>svg(`<rect width="360" height="130" fill="#ffcf8a"/>`+sol(70,96,26,'#ffb347')+`<rect y="120" width="360" height="90" fill="#2a5f8a"/>`+
+    `<path d="M0 135 Q30 128 60 135 T120 135 T180 135 T240 135 T300 135 T360 135" stroke="#7fb3d5" stroke-width="3" fill="none"/>`+
+    `<path d="M120 122 L250 122 L232 146 L136 146Z" fill="#3a2414"/><line x1="185" y1="122" x2="185" y2="40" stroke="#3a2414" stroke-width="4"/>
+     <path d="M188 46 L236 70 L188 100Z" fill="#efe2c6"/><path d="M182 50 L142 80 L182 104Z" fill="#e3d2b0"/>`+
+    `<text x="20" y="30" font-size="13" fill="#7d3219" font-family="Nunito" font-weight="800">Angola • Congo</text><text x="340" y="30" font-size="13" fill="#7d3219" font-family="Nunito" font-weight="800" text-anchor="end">Brasil</text>`),
+  palavras:()=>svg(chao(165,'#c9883e')+
+    `<g font-family="Baloo 2" font-weight="800" text-anchor="middle">
+     <rect x="30" y="26" width="110" height="40" rx="18" fill="#fff"/><text x="85" y="53" font-size="20" fill="#b5502a">cafuné</text>
+     <rect x="200" y="20" width="120" height="40" rx="18" fill="#fff"/><text x="260" y="47" font-size="20" fill="#2f7d4f">moleque</text>
+     <rect x="125" y="78" width="110" height="38" rx="18" fill="#fff"/><text x="180" y="104" font-size="20" fill="#1f4e8c">caçula</text></g>`+
+    fig(110,190,.8,P.fala)+fig(250,190,.8,P.fala,'#2a1a12',true),ceuDia),
+  roda:()=>svg(chao(140,'#b8763a')+`<ellipse cx="180" cy="172" rx="150" ry="28" fill="#9a5f2a"/>`+
+    berimbauista(52,170,.75)+berimbauista(84,168,.72)+fig(118,166,.62,P.sentado)+
+    fig(300,168,.75,P.palma)+fig(270,164,.6,P.palma)+fig(330,172,.7,P.palma)+
+    fig(165,170,.95,P.au)+fig(225,172,.95,P.esquiva,'#2a1a12',true)+
+    `<rect x="110" y="140" width="16" height="26" rx="3" fill="#7a3f1c"/><ellipse cx="118" cy="140" rx="8" ry="3" fill="#e9d3b4"/>`,ceuTarde),
+  berimbau:()=>svg(`<rect width="360" height="210" fill="#f3dca8"/>`+
+    `<path d="M150 20 Q120 105 150 190" stroke="#6b3f1d" stroke-width="9" fill="none" stroke-linecap="round"/>
+     <line x1="150" y1="20" x2="150" y2="190" stroke="#555" stroke-width="2"/>
+     <circle cx="138" cy="150" r="26" fill="#c8862f" stroke="#6b3f1d" stroke-width="3"/><circle cx="138" cy="150" r="13" fill="#7a4a1c"/>
+     <line x1="150" y1="125" x2="134" y2="125" stroke="#3a2414" stroke-width="3"/>
+     <line x1="210" y1="90" x2="250" y2="140" stroke="#5a3a1e" stroke-width="5" stroke-linecap="round"/>
+     <path d="M240 90 Q262 86 270 100 Q268 122 250 124 Q236 116 240 90Z" fill="#d9b27a" stroke="#6b3f1d" stroke-width="2"/>
+     <circle cx="196" cy="60" r="11" fill="#c0c0c0" stroke="#777" stroke-width="2"/>
+     <g font-family="Nunito" font-size="12" font-weight="800" fill="#7d3219"><text x="104" y="190" text-anchor="end">cabaça</text><text x="166" y="28">arame</text><text x="200" y="45">dobrão</text><text x="276" y="96">caxixi</text><text x="228" y="155">baqueta</text><text x="96" y="70" text-anchor="end">verga</text></g>`),
+  instrumentos:()=>svg(chao(160,'#a86a2c')+
+    `<path d="M70 70 L110 70 L102 160 L78 160Z" fill="#8a4a20"/><ellipse cx="90" cy="70" rx="20" ry="6" fill="#efe0c6" stroke="#5a2a10" stroke-width="2"/>
+     <g stroke="#5a2a10" stroke-width="2"><line x1="76" y1="90" x2="106" y2="90"/><line x1="78" y1="120" x2="104" y2="120"/></g>
+     <circle cx="180" cy="118" r="32" fill="#efe0c6" stroke="#6b3f1d" stroke-width="6"/>
+     ${[0,60,120,180,240,300].map(a=>{const r=a*Math.PI/180;return `<circle cx="${180+32*Math.cos(r)}" cy="${118+32*Math.sin(r)}" r="5" fill="#d0d0d0" stroke="#888"/>`}).join('')}
+     <path d="M262 50 Q240 110 262 166" stroke="#6b3f1d" stroke-width="6" fill="none"/><line x1="262" y1="50" x2="262" y2="166" stroke="#666" stroke-width="2"/><circle cx="252" cy="140" r="16" fill="#c8862f" stroke="#6b3f1d" stroke-width="2"/>
+     <path d="M300 120 L320 100 M300 128 L326 108" stroke="#999" stroke-width="7" stroke-linecap="round"/>`+
+    `<g font-family="Nunito" font-size="12" font-weight="800" fill="#fff" text-anchor="middle"><text x="90" y="182">atabaque</text><text x="180" y="182">pandeiro</text><text x="258" y="182">berimbau</text><text x="316" y="182">agogô</text></g>`,ceuTarde),
+  ginga:()=>svg(chao(160,'#c9883e')+sol(280,60,30,'#ffd66b')+
+    fig(140,178,1.3,P.ginga)+fig(240,178,1.3,P.ginga,'#2a1a12',true)+
+    `<path d="M110 196 Q140 186 170 196" stroke="#7d3219" stroke-width="3" fill="none" stroke-dasharray="5 5"/>`,ceuTarde),
+  mestre:()=>svg(chao(160,'#a86a2c')+`<rect x="40" y="30" width="280" height="110" rx="10" fill="#fbf3e4" opacity=".2"/>`+
+    berimbauista(180,182,1.25,'#1a100a')+fig(90,180,.8,P.sentado)+fig(270,180,.8,P.sentado,'#2a1a12',true),ceuTarde),
+  unesco:()=>svg(chao(150,'#b8763a')+`<ellipse cx="180" cy="170" rx="140" ry="26" fill="#9a5f2a"/>`+
+    `<g transform="translate(180 62)"><path d="M0 -36 L10 -12 L36 -12 L15 4 L23 30 L0 14 L-23 30 L-15 4 L-36 -12 L-10 -12Z" fill="#ffd34d" stroke="#b5502a" stroke-width="3"/></g>`+
+    fig(150,172,.85,P.meialua)+fig(212,172,.85,P.ginga,'#2a1a12',true)+berimbauista(60,170,.7)+fig(310,170,.7,P.palma),ceuTarde),
+  ngolo:()=>svg(chao(160,'#d39b4c')+sol(70,60,26)+
+    `<g transform="translate(270 150)"><ellipse cx="0" cy="-30" rx="28" ry="14" fill="#fff"/>
+     ${[-20,-10,0,10,20].map(x=>`<line x1="${x}" y1="-43" x2="${x+3}" y2="-17" stroke="#111" stroke-width="4"/>`).join('')}
+     <line x1="22" y1="-36" x2="34" y2="-60" stroke="#fff" stroke-width="9" stroke-linecap="round"/><ellipse cx="38" cy="-62" rx="9" ry="6" fill="#fff"/>
+     <g stroke="#fff" stroke-width="5" stroke-linecap="round"><line x1="-18" y1="-20" x2="-20" y2="10"/><line x1="-8" y1="-20" x2="-6" y2="10"/><line x1="10" y1="-20" x2="12" y2="10"/><line x1="18" y1="-20" x2="22" y2="10"/></g></g>`+
+    fig(100,178,.95,P.meialua)+fig(170,178,.95,P.esquiva,'#2a1a12',true),ceuDia),
+  proibida:()=>svg(chao(160,'#4a3a2e')+
+    `<rect x="40" y="30" width="280" height="130" fill="#6a5a4a"/>${[0,1,2,3,4,5,6,7,8,9].map(i=>`<line x1="${60+i*28}" y1="30" x2="${60+i*28}" y2="160" stroke="#2a1a12" stroke-width="5"/>`).join('')}`+
+    `<text x="180" y="190" font-family="Baloo 2" font-size="20" font-weight="800" fill="#ffd34d" text-anchor="middle">Código Penal de 1890</text>`,ceuNoite)
+};
+
+/* ---------- perguntas ---------- */
+const Q=[
+/* CULTURA AFRICANA */
+{t:0,s:'savana',p:'Em tamanho, a África é o ___ maior continente do mundo.',o:['1º','2º','4º','5º'],c:1,e:'A África é o 2º maior continente do mundo — só perde para a Ásia.'},
+{t:0,s:'mapa',p:'Quantos países existem hoje no continente africano?',o:['12','27','54','100'],c:2,e:'São 54 países, cada um com povos, línguas e costumes diferentes.'},
+{t:0,s:'mapa',p:'Qual é o maior deserto quente do mundo, que fica no norte da África?',o:['Deserto do Saara','Deserto do Atacama','Deserto de Gobi','Sertão'],c:0,e:'O Saara ocupa grande parte do norte africano e é o maior deserto quente do planeta.'},
+{t:0,s:'mapa',p:'Qual destes rios africanos é um dos mais longos do mundo?',o:['Rio Amazonas','Rio Nilo','Rio Tietê','Rio Tâmisa'],c:1,e:'O Nilo corta o nordeste da África e passa pelo Egito, onde foi essencial para a civilização dos faraós.'},
+{t:0,s:'savana',p:'Que árvore gigante, de tronco grosso que guarda água, é um símbolo da savana africana?',o:['Pinheiro','Ipê','Baobá','Coqueiro'],c:2,e:'O baobá pode viver mais de mil anos e é considerado uma árvore sagrada por muitos povos africanos.'},
+{t:0,s:'piramides',p:'As famosas pirâmides de Gizé ficam em qual país africano?',o:['Egito','Angola','Nigéria','Quênia'],c:0,e:'As pirâmides de Gizé ficam no Egito, no norte da África, e foram construídas há mais de 4.500 anos.'},
+{t:0,s:'grio',p:'Como se chamam os mestres da tradição oral que guardam e contam a história do seu povo?',o:['Faraós','Griôs','Pajés','Samurais'],c:1,e:'Os griôs são contadores de histórias, músicos e guardiões da memória — muita coisa era ensinada falando, de geração em geração.'},
+{t:0,s:'ubuntu',p:'A palavra "ubuntu", de línguas do sul da África, quer dizer algo como:',o:['"Cada um por si"','"Eu sou porque nós somos"','"Vamos dançar"','"Bom dia"'],c:1,e:'Ubuntu é a ideia de que somos humanos por meio dos outros: a comunidade e a solidariedade vêm em primeiro lugar.'},
+{t:0,s:'kente',p:'O kente, tecido de listras coloridas e cheio de significados, é tradicional de qual país?',o:['Gana','Egito','Marrocos','Madagascar'],c:0,e:'O kente vem de Gana, do povo Ashanti (Akan). Cada cor tem um significado, como o dourado para riqueza e o verde para crescimento.'},
+{t:0,s:'consciencia',p:'O Dia da Consciência Negra, 20 de novembro, homenageia qual líder?',o:['Dom Pedro I','Tiradentes','Zumbi dos Palmares','Mestre Bimba'],c:2,e:'Zumbi foi líder do Quilombo dos Palmares e morreu em 20 de novembro de 1695, lutando pela liberdade.'},
+/* POVOS BANTU */
+{t:1,s:'aldeia',p:'Quem são os povos bantu?',o:['Um único país africano','Um grande grupo de povos que falam línguas aparentadas','Uma tribo do deserto do Saara','Um povo da Europa'],c:1,e:'Bantu reúne centenas de povos diferentes que falam línguas da mesma "família", espalhados por boa parte da África.'},
+{t:1,s:'aldeia',p:'Em muitas línguas bantu, "ntu" quer dizer pessoa. Então "bantu" significa:',o:['"Pessoas" ou "povo"','"Rio grande"','"Terra vermelha"','"Rei"'],c:0,e:'O prefixo "ba" indica plural: ba + ntu = bantu, ou seja, "as pessoas".'},
+{t:1,s:'expansao',p:'De qual região da África os povos bantu provavelmente saíram há milhares de anos?',o:['Do Egito','Da região entre Camarões e Nigéria','Da ilha de Madagascar','Do Marrocos'],c:1,e:'Os estudiosos apontam a região entre os atuais Camarões e Nigéria, na África Centro-Ocidental, como o ponto de partida.'},
+{t:1,s:'expansao',p:'Na grande "expansão bantu", esses povos se espalharam principalmente para:',o:['A Europa','O centro, o leste e o sul da África','A América do Norte','O deserto do Saara'],c:1,e:'Ao longo de séculos, eles levaram suas línguas, a agricultura e o trabalho com o ferro para o centro, o leste e o sul do continente.'},
+{t:1,s:'palavras',p:'Qual destas é uma língua bantu falada por milhões de pessoas no leste da África?',o:['Inglês','Árabe','Suaíli','Japonês'],c:2,e:'O suaíli (kiswahili) é falado no Quênia, na Tanzânia e em outros países. "Hakuna matata" é uma expressão em suaíli!'},
+{t:1,s:'aldeia',p:'Que reino bantu poderoso existia na África Central no século XV, governado pelo "manicongo"?',o:['Reino do Congo','Reino da França','Império Romano','Reino de Portugal'],c:0,e:'O Reino do Congo era grande e organizado; seu rei recebia o título de manicongo.'},
+{t:1,s:'rainha',p:'Que rainha guerreira de Ndongo e Matamba (atual Angola) resistiu aos portugueses por décadas?',o:['Cleópatra','Rainha Nzinga','Rainha Elizabeth','Princesa Isabel'],c:1,e:'Nzinga (Njinga Mbande) foi diplomata e guerreira, e é até hoje símbolo de resistência em Angola.'},
+{t:1,s:'navio',p:'De onde vieram principalmente os bantu trazidos à força para o Brasil durante a escravidão?',o:['Angola e Congo','Egito e Marrocos','Índia e China','Portugal e Espanha'],c:0,e:'Grande parte dos africanos escravizados no Brasil eram bantu da região de Angola e do Congo (e também de Moçambique).'},
+{t:1,s:'palavras',p:'Qual destas palavras do português do Brasil veio de línguas bantu?',o:['Janela','Cadeira','Cafuné','Escola'],c:2,e:'Cafuné, moleque, caçula, quitanda, quindim e muitas outras palavras vieram de línguas bantu como o quimbundo.'},
+{t:1,s:'zimbabue',p:'Qual cidade de pedra no sul da África foi construída por ancestrais do povo Shona, que é bantu?',o:['Grande Zimbábue','Roma','Machu Picchu','Atenas'],c:0,e:'O Grande Zimbábue tem muralhas enormes de pedra encaixada sem cimento — e deu nome ao país Zimbábue.'},
+/* CAPOEIRA */
+{t:2,s:'roda',p:'Onde a capoeira nasceu?',o:['No Japão','No Brasil, criada por africanos escravizados e seus descendentes','Na China','Nos Estados Unidos'],c:1,e:'A capoeira nasceu no Brasil, com raízes africanas — foi uma forma de resistência, de luta e de preservar a cultura.'},
+{t:2,s:'berimbau',p:'Qual instrumento feito de um arco, um arame e uma cabaça comanda a roda de capoeira?',o:['Violão','Berimbau','Flauta','Piano'],c:1,e:'É o berimbau quem "manda" na roda: ele define o ritmo e a velocidade do jogo.'},
+{t:2,s:'roda',p:'Como se chama o círculo formado pelas pessoas onde a capoeira acontece?',o:['Quadra','Ringue','Roda','Tatame'],c:2,e:'Na roda, todos participam: tocando, cantando, batendo palmas e jogando.'},
+{t:2,s:'ginga',p:'Qual é o movimento básico da capoeira, aquele balanço de um lado para o outro?',o:['Ginga','Pulo','Soco','Corrida'],c:0,e:'A ginga deixa o capoeirista sempre em movimento, pronto para atacar ou se esquivar.'},
+{t:2,s:'mestre',p:'Qual mestre baiano criou a Capoeira Regional e abriu uma das primeiras academias?',o:['Mestre Pastinha','Mestre Bimba','Zumbi','Mestre Yoda'],c:1,e:'Mestre Bimba (Manoel dos Reis Machado) criou a Capoeira Regional na Bahia, na década de 1930.'},
+{t:2,s:'mestre',p:'Qual mestre ficou conhecido como o grande guardião da Capoeira Angola?',o:['Mestre Pastinha','Mestre Bimba','Pelé','Santos Dumont'],c:0,e:'Mestre Pastinha (Vicente Ferreira Pastinha) dedicou a vida a preservar e ensinar a Capoeira Angola, em Salvador.'},
+{t:2,s:'unesco',p:'Em 2014, a UNESCO reconheceu a roda de capoeira como:',o:['Esporte olímpico','Patrimônio Cultural Imaterial da Humanidade','Dança proibida','Brincadeira de criança'],c:1,e:'A roda de capoeira virou Patrimônio Cultural Imaterial da Humanidade — um tesouro de todo o mundo.'},
+{t:2,s:'instrumentos',p:'Qual destes NÃO é um instrumento usado na roda de capoeira?',o:['Atabaque','Pandeiro','Agogô','Violino'],c:3,e:'Na roda tocam berimbau, atabaque, pandeiro, agogô e reco-reco. O violino não faz parte!'},
+{t:2,s:'ngolo',p:'Segundo uma tradição, a capoeira seria parente do N\'golo, a "dança da zebra". De qual país africano vem o N\'golo?',o:['Egito','Angola','Marrocos','Gana'],c:1,e:'O N\'golo é do sul de Angola, terra de povos bantu. Muitos mestres contam essa ligação — é um dos laços da capoeira com a herança bantu.'},
+{t:2,s:'proibida',p:'Depois da abolição da escravidão, o que o Código Penal de 1890 fez com a capoeira?',o:['Transformou em matéria da escola','Proibiu e tratou como crime','Tornou esporte nacional','Mandou ensinar no exército'],c:1,e:'A capoeira foi perseguida e proibida por lei. Só décadas depois, com mestres como Bimba e Pastinha, ela foi aceita e valorizada.'}
+];
+const TEMAS=['Cultura africana','Povos bantu','Capoeira'];
+
+/* ---------- lógica ---------- */
+const app=document.getElementById('app');
+let i=0,pts=0,erros=[],porTema=[0,0,0],resp=false;
+const L='ABCD';
+function capa(){
+  app.innerHTML=S.capa()+`<div class="body"><h1>Quiz: África, Povos Bantu e Capoeira</h1>
+  <p class="sub">30 perguntas para descobrir quanto você sabe sobre a cultura africana, os povos bantu e a capoeira. Bora jogar?</p>
+  <div class="temas"><span class="tag t0">10 · Cultura africana</span><span class="tag t1">10 · Povos bantu</span><span class="tag t2">10 · Capoeira</span></div>
+  <button class="btn" id="go">Começar!</button></div>`;
+  document.getElementById('go').onclick=()=>{i=0;pts=0;erros=[];porTema=[0,0,0];show()};
+}
+function show(){
+  const q=Q[i];resp=false;
+  app.innerHTML=S[q.s]()+`<div class="body">
+   <div class="top"><span class="num">${i+1}/30</span><div class="prog"><i style="width:${(i/30)*100}%"></i></div><span class="pts">⭐ ${pts}</span></div>
+   <span class="tag t${q.t}">${TEMAS[q.t]}</span>
+   <h2>${q.p}</h2>
+   <div class="ops">${q.o.map((o,k)=>`<button class="op" data-k="${k}"><b>${L[k]}</b><span>${o}</span></button>`).join('')}</div>
+   <div class="fb" id="fb"></div>
+   <button class="btn" id="next">${i<29?'Próxima →':'Ver resultado'}</button></div>`;
+  app.querySelectorAll('.op').forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+  document.getElementById('next').onclick=()=>{i++;i<30?show():fim()};
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function answer(k){
+  if(resp)return;resp=true;const q=Q[i];const ok=k===q.c;
+  const bs=app.querySelectorAll('.op');bs.forEach(b=>b.disabled=true);
+  bs[q.c].classList.add('ok');if(!ok)bs[k].classList.add('no');
+  if(ok){pts++;porTema[q.t]++}else erros.push(i);
+  const fb=document.getElementById('fb');fb.className='fb show '+(ok?'ok':'no');
+  const elogios=['Isso aí!','Mandou bem!','Axé! Acertou!','Certíssimo!','Show!'];
+  fb.innerHTML=`<strong>${ok?elogios[i%5]:'Quase! A resposta é '+L[q.c]+'.'}</strong>${q.e}`;
+  app.querySelector('.pts').textContent='⭐ '+pts;
+  document.getElementById('next').style.display='block';
+}
+function fim(){
+  const m=pts>=27?'Você é mestre! Axé! 🏆':pts>=21?'Muito bem! Você sabe bastante! 🎉':pts>=15?'Bom trabalho! Dá pra melhorar ainda mais 💪':'Continue estudando — tente de novo! 📚';
+  app.innerHTML=S.unesco()+`<div class="body"><div class="big">${pts}/30</div><p class="msg">${m}</p>
+  <div class="parc">${TEMAS.map((t,k)=>`<div>${t}<span>${porTema[k]}/10</span></div>`).join('')}</div>
+  <button class="btn" id="re">Jogar de novo</button>
+  ${erros.length?`<div class="rev"><h3>Revise o que você errou</h3>${erros.map(n=>`<div class="it">${n+1}. ${Q[n].p}<br><em>✔ ${Q[n].o[Q[n].c]}</em></div>`).join('')}</div>`:''}
+  </div>`;
+  document.getElementById('re').onclick=()=>{i=0;pts=0;erros=[];porTema=[0,0,0];show()};
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+capa();
+</script>
+</body>
+</html>

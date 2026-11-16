@@ -1,0 +1,14 @@
+{
+  "name": "Quiz — África, Povos Bantu e Capoeira",
+  "short_name": "Quiz África",
+  "lang": "pt-BR",
+  "start_url": "/quiz-africa/",
+  "scope": "/quiz-africa/",
+  "display": "standalone",
+  "background_color": "#fbf3e4",
+  "theme_color": "#b5502a",
+  "icons": [
+    { "src": "/quiz-africa/icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/quiz-africa/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
