@@ -63,6 +63,14 @@ export function Inicio({ irPara, estudar }: { irPara(a: Aba): void; estudar(mate
         </div>
       </div>
 
+      <a className="cartao linha clicavel" href="/quiz-africa/" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <span style={{ fontSize: 28 }}>🥁</span>
+        <div className="cresce">
+          <strong>Quiz: África, Povos Bantu e Capoeira</strong>
+          <p className="suave">30 perguntas com ilustrações</p>
+        </div>
+      </a>
+
       <button className="cartao linha clicavel" onClick={() => irPara('foco')}>
         <Icone nome="foco" />
         <div className="cresce">
