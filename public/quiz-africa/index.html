@@ -74,6 +74,7 @@ nav.menu a.on{background:#b5502a;color:#fff;border-color:#b5502a}
 <div class="kente"></div>
 
 <script src="/quiz-africa/gincana.js"></script>
+<script src="/quiz-africa/ranking.js"></script>
 <script>
 /* ---------- desenho de figuras humanas (silhuetas) ---------- */
 function fig(ox,oy,s,p,c,mirror){
@@ -277,10 +278,16 @@ function capa(){
   <div class="temas"><span class="tag t0">10 · Cultura africana</span><span class="tag t1">10 · Povos bantu</span><span class="tag t2">10 · Capoeira</span></div>
   <button class="btn" id="go">Começar!</button>
   <button class="btn sec" id="gin">⚔️ Modo gincana (2 equipes)</button>
+  <button class="btn sec" id="rank">🏆 Ver o ranking</button>
   <a class="btn sec" style="text-align:center;text-decoration:none" href="/quiz-africa/paises.html">🏳️ Bandeiras da África (54 países)</a>
   <a class="btn sec" style="text-align:center;text-decoration:none" href="/quiz-africa/video.html">▶ Assistir ao vídeo</a></div>`;
-  document.getElementById('go').onclick=()=>{G=null;i=0;pts=0;erros=[];porTema=[0,0,0];show()};
+  document.getElementById('go').onclick=()=>{G=null;telaNome(app,'Quiz: África, Povos Bantu e Capoeira — 30 perguntas.',()=>{i=0;pts=0;erros=[];porTema=[0,0,0];show()},capa)};
+  document.getElementById('rank').onclick=verRanking;
   document.getElementById('gin').onclick=()=>telaGincana(app,[['Começar a gincana (30 perguntas)',()=>{i=0;pts=0;erros=[];porTema=[0,0,0];show()}]],capa);
+}
+function verRanking(){
+  app.innerHTML=`<div class="body">${rTabela('cultura','Ranking — Quiz da cultura')}<button class="btn" id="vv">Voltar</button></div>`;
+  document.getElementById('vv').onclick=capa;rLigarLimpar(app,verRanking);window.scrollTo({top:0});
 }
 function show(){
   const q=Q[i];resp=false;
@@ -307,14 +314,17 @@ function answer(k){
   document.getElementById('next').style.display='block';
 }
 function fim(){
+  const meu=G?null:rSalvar('cultura',pts,30);
   const m=pts>=27?'Você é mestre! Axé! 🏆':pts>=21?'Muito bem! Você sabe bastante! 🎉':pts>=15?'Bom trabalho! Dá pra melhorar ainda mais 💪':'Continue estudando — tente de novo! 📚';
-  app.innerHTML=S.unesco()+`<div class="body">${gFim()}<div class="big">${pts}/30</div><p class="msg">${m}</p>
+  app.innerHTML=S.unesco()+`<div class="body">${gFim()}${!G&&JOGADOR?`<p class="msg" style="margin:0 0 4px"><b>${rEsc(JOGADOR)}</b>, você fez:</p>`:''}<div class="big">${pts}/30</div><p class="msg">${m}</p>
   <div class="parc">${TEMAS.map((t,k)=>`<div>${t}<span>${porTema[k]}/10</span></div>`).join('')}</div>
-  <button class="btn" id="re">Jogar de novo</button>
+  ${G?'':rTabela('cultura','Ranking — Quiz da cultura',meu)}
+  <button class="btn" id="re">${G?'Jogar de novo':'Próximo jogador'}</button>
   <button class="btn sec" id="ini">Voltar ao início</button>
   ${erros.length?`<div class="rev"><h3>Revise o que você errou</h3>${erros.map(n=>`<div class="it">${n+1}. ${Q[n].p}<br><em>✔ ${Q[n].o[Q[n].c]}</em></div>`).join('')}</div>`:''}
   </div>`;
-  document.getElementById('re').onclick=()=>{gZerar();i=0;pts=0;erros=[];porTema=[0,0,0];show()};
+  document.getElementById('re').onclick=()=>{const z=()=>{i=0;pts=0;erros=[];porTema=[0,0,0];show()};if(G){gZerar();z()}else telaNome(app,'Quiz: África, Povos Bantu e Capoeira — 30 perguntas.',z,capa)};
+  rLigarLimpar(app,()=>app.querySelectorAll('.rk').forEach(d=>d.remove()));
   document.getElementById('ini').onclick=()=>{G=null;capa()};
   window.scrollTo({top:0,behavior:'smooth'});
 }
