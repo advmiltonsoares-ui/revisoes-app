@@ -79,6 +79,14 @@ export function Inicio({ irPara, estudar }: { irPara(a: Aba): void; estudar(mate
         </div>
       </a>
 
+      <a className="cartao linha clicavel" href="/plantao-esportivo/video.html" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <span style={{ fontSize: 28 }}>🎬</span>
+        <div className="cresce">
+          <strong>Vídeo: Plantão Esportivo</strong>
+          <p className="suave">2 minutos com narração e legendas</p>
+        </div>
+      </a>
+
       <a className="cartao linha clicavel" href="/plantao-esportivo/quiz.html" style={{ textDecoration: 'none', color: 'inherit' }}>
         <span style={{ fontSize: 28 }}>🏆</span>
         <div className="cresce">
