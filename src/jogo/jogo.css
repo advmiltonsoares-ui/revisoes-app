@@ -102,3 +102,5 @@ label{display:flex;flex-direction:column;gap:6px;font-weight:700}
 .chip[aria-pressed="true"]{border-color:var(--y);box-shadow:0 0 0 3px rgba(242,194,48,.35)}
 .chip:not(.cor)[aria-pressed="true"]{background:var(--y);color:#13201A}
 .cel .cab .who svg{width:40px;height:40px}
+.aviso{background:#3A3410;border:2px solid var(--y);border-radius:16px;padding:12px 16px;font-size:16px;line-height:1.4}
+.aviso .rel{display:inline-block;margin-left:6px;font-family:Anton,sans-serif;font-size:24px;color:var(--y);font-variant-numeric:tabular-nums}

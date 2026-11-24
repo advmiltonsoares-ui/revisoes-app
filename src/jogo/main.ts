@@ -54,6 +54,7 @@ function inicio(erro = '') {
       <label>Código da sala<input class="codigo" id="cod" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="00000" value="${esc(cod)}"></label>
       <label>Seu nome e sobrenome<input id="nome" maxlength="20" autocomplete="name" placeholder="Ex.: Arthur Soares" value="${esc(ler('jogo-nome') || '')}"></label>
       <button class="main" type="submit">Entrar no jogo</button>
+      <p class="muted" style="font-size:15px;text-align:center">⏱️ Depois de entrar, você terá <b>1 minuto</b> para criar o seu personagem.</p>
     </form>
     <div class="card">
       <h2>Criar uma sala</h2>
@@ -138,6 +139,7 @@ function telao(c: string) {
           <div class="card" style="min-height:100%">
             <div class="row" style="align-items:center"><h2 style="flex:1"><span class="y">${jogs.length}</span> ${jogs.length === 1 ? 'jogador' : 'jogadores'}</h2></div>
             <div class="jogs">${jogs.length ? jogs.map((j) => `<span class="jog">${avatarSVG(j.av, 44)} ${esc(j.nome)}</span>`).join('') : '<p class="muted">Esperando a turma entrar…</p>'}</div>
+            <p class="muted">Cada aluno tem 1 minuto para criar o personagem depois de digitar o código.</p>
             <p class="muted">${n} perguntas · nível ${sala.nivel === 'facil' ? 'fácil' : 'difícil'} · ${TEMPO} segundos cada</p>
             <button class="main" id="go" ${jogs.length ? '' : 'disabled'}>Começar o jogo</button>
           </div>
@@ -241,8 +243,12 @@ function criarPersonagem(c: string, nome: string) {
   try { av = normalizar(JSON.parse(ler('jogo-avatar') || 'null')); if (!ler('jogo-avatar')) av = avatarPadrao(); } catch { av = avatarPadrao(); }
   const linha = (rot: string, campo: keyof Avatar, itens: string[], cores = false) => `
     <div class="crow"><p class="clab">${rot}</p><div class="chips">${itens.map((t, k) => `<button type="button" class="chip ${cores ? 'cor' : ''}" data-f="${campo}" data-v="${k}" aria-pressed="${av[campo] === k}" ${cores ? `style="background:${t}" aria-label="${rot} ${k + 1}"` : ''}>${cores ? '' : esc(t)}</button>`).join('')}</div></div>`;
+  const fimEm = Date.now() + 60_000; // 1 minuto para montar o personagem
+  let entrou = false;
+  const restaTxt = () => { const r = Math.max(0, Math.ceil((fimEm - Date.now()) / 1000)); return `${Math.floor(r / 60)}:${String(r % 60).padStart(2, '0')}`; };
   const tela = () => {
     $app.innerHTML = `<div class="centro" style="max-width:640px">
+      <div class="aviso" role="status">⏱️ Você tem <b>1 minuto</b> para montar o seu personagem. Depois disso, você entra com ele do jeito que estiver. <span class="rel" id="rel">${restaTxt()}</span></div>
       <h2 style="text-align:center">Crie o seu <span class="y">personagem</span></h2>
       <div class="prev">${avatarSVG(av, 170)}<p class="d" style="font-size:30px">${esc(nome)}</p></div>
       <div class="card" style="gap:12px">
@@ -262,8 +268,11 @@ function criarPersonagem(c: string, nome: string) {
     const num = document.getElementById('num') as HTMLInputElement;
     num.oninput = () => { num.value = num.value.replace(/\D/g, '').slice(0, 2); av.n = num.value; const pv = $app.querySelector('.prev svg'); if (pv) pv.outerHTML = avatarSVG(av, 170); };
     document.getElementById('sorte')!.onclick = () => { av = avatarPadrao(); tela(); };
-    document.getElementById('pronto')!.onclick = async (e) => {
-      (e.target as HTMLButtonElement).disabled = true;
+    document.getElementById('pronto')!.onclick = () => confirmar();
+  };
+  const confirmar = async () => {
+      if (entrou) return; entrou = true; clearInterval(relogio);
+      const bt = document.getElementById('pronto') as HTMLButtonElement | null; if (bt) bt.disabled = true;
       gravar('jogo-avatar', JSON.stringify(av));
       const id = Math.random().toString(36).slice(2, 12);
       const j: Omit<Jogador, 'id'> = { nome: nome.slice(0, 20), av, pontos: 0, resp: -1, ri: -1, ganho: 0, entrouEm: Date.now() };
@@ -273,9 +282,13 @@ function criarPersonagem(c: string, nome: string) {
         history.replaceState(null, '', `?sala=${c}`);
         celular(c, id);
       } catch (err) { console.error(err); inicio('Não deu para entrar. Tente de novo.'); }
-    };
   };
   tela();
+  clearInterval(relogio);
+  relogio = window.setInterval(() => {
+    const el = document.getElementById('rel'); if (el) el.textContent = restaTxt();
+    if (Date.now() >= fimEm) confirmar();
+  }, 500);
 }
 
 function celular(c: string, id: string) {
