@@ -62,14 +62,14 @@ let best=null;try{best=localStorage.getItem('quiz-esportes-recorde')}catch(e){}
 let S;
 function inicio(){
   $.innerHTML=`<h1>Quiz dos <span>Esportes</span></h1><span class="tag">Nível difícil</span>
-  <p class="muted" style="margin:0">${Q.length} perguntas difíceis sobre regras, medidas e curiosidades de futsal, futebol, vôlei, basquete, handebol, natação, atletismo, tênis, skate e do plantão esportivo. Cada acerto vale 10 pontos.</p>
+  <p class="muted" style="margin:0">12 perguntas difíceis sobre regras, medidas e curiosidades de futsal, futebol, vôlei, basquete, handebol, natação, atletismo, tênis, skate e do plantão esportivo. Cada acerto vale 10 pontos.</p>
   <div class="start">${['futsal','basquete','volei','natacao','handebol','skate'].map(k=>`<div class="art">${IMG[k]}</div>`).join('')}</div>
   ${best?`<p class="muted" style="margin:0;text-align:center">Seu recorde: <b style="color:var(--y)">${esc(best)}%</b></p>`:''}
   <button class="main" id="go">Começar o quiz</button>`;
   document.getElementById('go').onclick=comecar;
 }
 function comecar(){
-  S={i:0,pts:0,ok:0,res:[],l:Q.map(q=>{const c={...q};if(q.t==='mc'){const r=q.o[q.a];c.os=mix(q.o);c.ai=c.os.indexOf(r)}if(q.t==='match'){c.L=mix(q.pairs.map((p,i)=>({t:p[0],i})));c.R=mix(q.pairs.map((p,i)=>({t:p[1],i})))}return c})};
+  S={i:0,pts:0,ok:0,res:[],l:mix(Q).slice(0,12).map(q=>{const c={...q};if(q.t==='mc'){const r=q.o[q.a];c.os=mix(q.o);c.ai=c.os.indexOf(r)}if(q.t==='match'){c.L=mix(q.pairs.map((p,i)=>({t:p[0],i})));c.R=mix(q.pairs.map((p,i)=>({t:p[1],i})))}return c})};
   pergunta();
 }
 function placar(){
