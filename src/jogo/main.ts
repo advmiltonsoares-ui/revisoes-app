@@ -105,7 +105,10 @@ async function criar(nivel: Nivel, qtd: number) {
     telao(c);
   } catch (e) {
     console.error(e);
-    inicio('Não deu para criar a sala. Confira se as regras do Firebase foram publicadas.');
+    const cod = (e as { code?: string })?.code || String(e);
+    inicio(cod.includes('permission')
+      ? 'O Firebase recusou criar a sala (permissão negada): as regras novas do jogo ainda não foram publicadas no Firebase.'
+      : `Não deu para criar a sala. Erro: ${cod}`);
   }
 }
 
