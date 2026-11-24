@@ -83,3 +83,22 @@ label{display:flex;flex-direction:column;gap:6px;font-weight:700}
 @keyframes sobe{from{transform:translateY(40%);opacity:0}}
 @media (max-width:820px){.espera,.meio{grid-template-columns:1fr}.opcs{grid-template-columns:1fr}.timer{width:84px;height:84px;font-size:38px}.timer::before{inset:9px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+/* personagem */
+.jog{display:inline-flex;align-items:center;gap:8px;padding:4px 16px 4px 4px}
+.jog svg,.who svg{border-radius:50%;flex:none}
+.who{display:inline-flex;align-items:center;gap:10px;min-width:0}
+.rk .who{font-size:inherit}
+.sobe{color:var(--ok);font-size:.7em;font-weight:800}.desce{color:var(--bad);font-size:.7em;font-weight:800}
+.ganhou{color:var(--ok);font-family:Inter,sans-serif;font-size:.6em;margin-right:8px}
+.deg svg{border-radius:50%;border:5px solid rgba(255,255,255,.7)}
+.prev{display:flex;flex-direction:column;align-items:center;gap:8px}
+.prev svg{border-radius:50%;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.crow{display:flex;flex-direction:column;gap:6px}
+.clab{font-weight:800;font-size:15px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:8px 14px;font-size:15px;border-radius:999px}
+.chip.cor{width:44px;height:44px;padding:0;border:3px solid transparent}
+.chip[aria-pressed="true"]{border-color:var(--y);box-shadow:0 0 0 3px rgba(242,194,48,.35)}
+.chip:not(.cor)[aria-pressed="true"]{background:var(--y);color:#13201A}
+.cel .cab .who svg{width:40px;height:40px}

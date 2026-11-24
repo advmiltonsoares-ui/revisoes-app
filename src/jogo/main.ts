@@ -6,6 +6,7 @@ import {
 } from 'firebase/firestore';
 import QRCode from 'qrcode';
 import { IMG, FACIL, DIFICIL, type Pergunta } from './dados';
+import { avatarSVG, avatarPadrao, normalizar, PELES, CABELOS, CORES_CABELO, CAMISAS, ACESSORIOS, type Avatar } from './avatar';
 
 /* ---------- Firebase (as mesmas chaves do app) ---------- */
 const config = {
@@ -18,13 +19,12 @@ const db = config.apiKey ? getFirestore(initializeApp(config)) : null;
 
 /* ---------- tipos ---------- */
 type Nivel = 'facil' | 'dificil';
-type Estado = 'espera' | 'pergunta' | 'resposta' | 'fim';
+type Estado = 'espera' | 'pergunta' | 'resposta' | 'ranking' | 'fim';
 interface Sala { estado: Estado; nivel: Nivel; ordem: number[]; i: number; inicio: number; criadaEm: number }
-interface Jogador { id: string; nome: string; emoji: string; pontos: number; resp: number; ri: number; ganho: number; entrouEm: number }
+interface Jogador { id: string; nome: string; av: Avatar; pontos: number; resp: number; ri: number; ganho: number; entrouEm: number }
 
 const TEMPO = 20; // segundos por pergunta
 const FORMAS = ['▲', '◆', '●', '■'];
-const EMOJIS = ['⚽', '🏀', '🏐', '🎾', '🏓', '🛹', '🏊', '🏃', '🥅', '🏆', '🥇', '🤾'];
 const $app = document.getElementById('app')!;
 const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
 const banco = (n: Nivel) => (n === 'facil' ? FACIL : DIFICIL);
@@ -52,7 +52,7 @@ function inicio(erro = '') {
     <form class="card" id="fEntrar">
       <h2>Entrar numa sala</h2>
       <label>Código da sala<input class="codigo" id="cod" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="00000" value="${esc(cod)}"></label>
-      <label>Seu nome<input id="nome" maxlength="16" autocomplete="nickname" placeholder="Como você quer aparecer" value="${esc(ler('jogo-nome') || '')}"></label>
+      <label>Seu nome e sobrenome<input id="nome" maxlength="20" autocomplete="name" placeholder="Ex.: Arthur Soares" value="${esc(ler('jogo-nome') || '')}"></label>
       <button class="main" type="submit">Entrar no jogo</button>
     </form>
     <div class="card">
@@ -78,7 +78,7 @@ function inicio(erro = '') {
     const c = (document.getElementById('cod') as HTMLInputElement).value.trim();
     const n = (document.getElementById('nome') as HTMLInputElement).value.trim();
     if (c.length !== 5) return inicio('O código da sala tem 5 números.');
-    if (!n) return inicio('Escreva o seu nome.');
+    if (n.split(/\s+/).length < 2) return inicio('Escreva o seu nome e sobrenome.');
     gravar('jogo-nome', n);
     entrar(c, n);
   };
@@ -137,7 +137,7 @@ function telao(c: string) {
           </div>
           <div class="card" style="min-height:100%">
             <div class="row" style="align-items:center"><h2 style="flex:1"><span class="y">${jogs.length}</span> ${jogs.length === 1 ? 'jogador' : 'jogadores'}</h2></div>
-            <div class="jogs">${jogs.length ? jogs.map((j) => `<span class="jog">${esc(j.emoji)} ${esc(j.nome)}</span>`).join('') : '<p class="muted">Esperando a turma entrar…</p>'}</div>
+            <div class="jogs">${jogs.length ? jogs.map((j) => `<span class="jog">${avatarSVG(j.av, 44)} ${esc(j.nome)}</span>`).join('') : '<p class="muted">Esperando a turma entrar…</p>'}</div>
             <p class="muted">${n} perguntas · nível ${sala.nivel === 'facil' ? 'fácil' : 'difícil'} · ${TEMPO} segundos cada</p>
             <button class="main" id="go" ${jogs.length ? '' : 'disabled'}>Começar o jogo</button>
           </div>
@@ -147,11 +147,11 @@ function telao(c: string) {
     }
     if (sala.estado === 'fim') {
       const r = ordenar(jogs);
-      const deg = (j: Jogador | undefined, cls: string, pos: string) => j ? `<div class="deg ${cls}"><div class="d">${pos}</div><div style="font-size:44px">${esc(j.emoji)}</div><div class="nm">${esc(j.nome)}</div><div class="d" style="font-size:34px">${j.pontos}</div></div>` : '<div></div>';
+      const deg = (j: Jogador | undefined, cls: string, pos: string) => j ? `<div class="deg ${cls}"><div class="d">${pos}</div><div>${avatarSVG(j.av, 110)}</div><div class="nm">${esc(j.nome)}</div><div class="d" style="font-size:34px">${j.pontos}</div></div>` : '<div></div>';
       $app.innerHTML = `<div class="tela">${topo}
         <h1 style="text-align:center">Pódio <span>final</span></h1>
         <div class="podio">${deg(r[1], 'p2', '2º')}${deg(r[0], 'p1', '1º')}${deg(r[2], 'p3', '3º')}</div>
-        <div class="rank" style="max-width:900px;width:100%;margin:0 auto">${r.slice(3, 10).map((j, k) => `<div class="rk"><span class="pos">${k + 4}º</span><span>${esc(j.emoji)} ${esc(j.nome)}</span><span class="pts">${j.pontos}</span></div>`).join('')}</div>
+        <div class="rank" style="max-width:900px;width:100%;margin:0 auto">${r.slice(3, 10).map((j, k) => `<div class="rk"><span class="pos">${k + 4}º</span><span class="who">${avatarSVG(j.av, 44)} ${esc(j.nome)}</span><span class="pts">${j.pontos}</span></div>`).join('')}</div>
         <div class="row" style="max-width:600px;width:100%;margin:0 auto"><button class="main" id="nova">Nova sala</button></div></div>`;
       document.getElementById('nova')!.onclick = () => { history.replaceState(null, '', location.pathname); inicio(); };
       return;
@@ -177,18 +177,29 @@ function telao(c: string) {
       if (jogs.length && resp.length >= jogs.length) revelar();
       return;
     }
-    // resposta
-    const cont = q.o.map((_, k) => resp.filter((j) => j.resp === k).length);
-    const max = Math.max(1, ...cont);
-    const r = ordenar(jogs).slice(0, 5);
     const ult = sala.i + 1 >= n;
-    $app.innerHTML = `<div class="tela">${cab}<div></div></div>
-      <div class="opcs">${q.o.map((o, k) => `<div class="opc c${k} ${k === q.a ? 'certa' : 'apaga'}"><span class="f">${k === q.a ? '✔' : FORMAS[k]}</span>${esc(o)}<span class="n">${cont[k]}</span><span class="barra" style="width:${(cont[k] / max) * 100}%"></span></div>`).join('')}</div>
-      <div class="row" style="align-items:flex-start">
-        <div class="rank" style="flex:3">${r.map((j, k) => `<div class="rk" style="animation-delay:${k * 0.08}s"><span class="pos">${k + 1}º</span><span>${esc(j.emoji)} ${esc(j.nome)}</span><span class="pts">${j.pontos}</span></div>`).join('')}</div>
-        <div style="flex:1;min-width:220px;display:flex;flex-direction:column;gap:10px"><button class="main" id="prox">${ult ? 'Ver o pódio 🏆' : 'Próxima pergunta →'}</button></div>
-      </div></div>`;
-    document.getElementById('prox')!.onclick = () => ult ? avancar({ estado: 'fim' }) : avancar({ estado: 'pergunta', i: sala!.i + 1, inicio: Date.now() });
+    const proxima = () => ult ? avancar({ estado: 'fim' }) : avancar({ estado: 'pergunta', i: sala!.i + 1, inicio: Date.now() });
+    if (sala.estado === 'resposta') {
+      const cont = q.o.map((_, k) => resp.filter((j) => j.resp === k).length);
+      const max = Math.max(1, ...cont);
+      $app.innerHTML = `<div class="tela">${cab}<div></div></div>
+        <div class="opcs">${q.o.map((o, k) => `<div class="opc c${k} ${k === q.a ? 'certa' : 'apaga'}"><span class="f">${k === q.a ? '✔' : FORMAS[k]}</span>${esc(o)}<span class="n">${cont[k]}</span><span class="barra" style="width:${(cont[k] / max) * 100}%"></span></div>`).join('')}</div>
+        <p class="muted" style="font-weight:800;text-align:center;font-size:22px">${cont[q.a]} de ${jogs.length} ${cont[q.a] === 1 ? 'acertou' : 'acertaram'}</p>
+        <div class="row" style="max-width:640px;width:100%;margin:0 auto"><button class="main" id="rk">Ver o ranking 🏆</button></div></div>`;
+      document.getElementById('rk')!.onclick = () => avancar({ estado: 'ranking' });
+      return;
+    }
+    // ranking (placar depois de cada pergunta)
+    const agora = ordenar(jogs);
+    const antes = ordenar(jogs.map((j) => ({ ...j, pontos: j.pontos - (j.ri === sala!.i ? j.ganho : 0) })));
+    const sobe = (id: string, k: number) => { const d = antes.findIndex((j) => j.id === id) - k; return d > 0 ? `<span class="sobe">▲${d}</span>` : d < 0 ? `<span class="desce">▼${-d}</span>` : ''; };
+    $app.innerHTML = `<div class="tela">${topo}
+      <h1 style="text-align:center">Ranking <span>da turma</span></h1>
+      <p class="muted" style="text-align:center;font-weight:800">Depois da pergunta ${sala.i + 1} de ${n}</p>
+      <div class="rank" style="max-width:1000px;width:100%;margin:0 auto">${agora.slice(0, 8).map((j, k) => `<div class="rk" style="animation-delay:${k * 0.07}s"><span class="pos">${k + 1}º</span><span class="who">${avatarSVG(j.av, 52)} ${esc(j.nome)} ${sobe(j.id, k)}</span><span class="pts">${j.ri === sala!.i && j.ganho ? `<small class="ganhou">+${j.ganho}</small> ` : ''}${j.pontos}</span></div>`).join('')}
+      ${agora.length > 8 ? `<p class="muted" style="text-align:center">e mais ${agora.length - 8} ${agora.length - 8 === 1 ? 'jogador' : 'jogadores'}</p>` : ''}</div>
+      <div class="row" style="max-width:640px;width:100%;margin:0 auto"><button class="main" id="prox">${ult ? 'Ver o pódio final 🏆' : 'Próxima pergunta →'}</button></div></div>`;
+    document.getElementById('prox')!.onclick = proxima;
   }
 
   parar.push(onSnapshot(salaRef(c), (s) => {
@@ -215,21 +226,56 @@ async function entrar(c: string, nome: string) {
   try {
     const s = await getDoc(salaRef(c));
     if (!s.exists()) return inicio(`Não achei a sala ${c}. Confira o código no telão.`);
-    let id = ler(`jogo-id-${c}`);
-    const ja = id ? (await getDoc(jogRef(c, id))).exists() : false;
-    if (!ja) {
-      if ((s.data() as Sala).estado === 'fim') return inicio('Esse jogo já terminou.');
-      id = Math.random().toString(36).slice(2, 12);
-      const j: Omit<Jogador, 'id'> = { nome: nome.slice(0, 16), emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)], pontos: 0, resp: -1, ri: -1, ganho: 0, entrouEm: Date.now() };
-      await setDoc(jogRef(c, id), j);
-      gravar(`jogo-id-${c}`, id);
-    }
-    history.replaceState(null, '', `?sala=${c}`);
-    celular(c, id!);
+    const id = ler(`jogo-id-${c}`);
+    if (id && (await getDoc(jogRef(c, id))).exists()) { history.replaceState(null, '', `?sala=${c}`); return celular(c, id); }
+    if ((s.data() as Sala).estado === 'fim') return inicio('Esse jogo já terminou.');
+    criarPersonagem(c, nome);
   } catch (e) {
     console.error(e);
     inicio('Não deu para entrar. Tente de novo.');
   }
+}
+
+function criarPersonagem(c: string, nome: string) {
+  let av: Avatar;
+  try { av = normalizar(JSON.parse(ler('jogo-avatar') || 'null')); if (!ler('jogo-avatar')) av = avatarPadrao(); } catch { av = avatarPadrao(); }
+  const linha = (rot: string, campo: keyof Avatar, itens: string[], cores = false) => `
+    <div class="crow"><p class="clab">${rot}</p><div class="chips">${itens.map((t, k) => `<button type="button" class="chip ${cores ? 'cor' : ''}" data-f="${campo}" data-v="${k}" aria-pressed="${av[campo] === k}" ${cores ? `style="background:${t}" aria-label="${rot} ${k + 1}"` : ''}>${cores ? '' : esc(t)}</button>`).join('')}</div></div>`;
+  const tela = () => {
+    $app.innerHTML = `<div class="centro" style="max-width:640px">
+      <h2 style="text-align:center">Crie o seu <span class="y">personagem</span></h2>
+      <div class="prev">${avatarSVG(av, 170)}<p class="d" style="font-size:30px">${esc(nome)}</p></div>
+      <div class="card" style="gap:12px">
+        ${linha('Pele', 'p', PELES, true)}
+        ${linha('Cabelo', 'h', CABELOS)}
+        ${linha('Cor do cabelo', 'hc', CORES_CABELO, true)}
+        ${linha('Camisa', 'c', CAMISAS, true)}
+        ${linha('Acessório', 'a', ACESSORIOS)}
+        <label class="crow"><span class="clab">Número da camisa</span><input id="num" inputmode="numeric" maxlength="2" value="${esc(av.n)}" style="max-width:140px;font-size:26px;text-align:center"></label>
+      </div>
+      <button class="main" id="pronto">Entrar no jogo</button>
+      <button id="sorte">🎲 Personagem surpresa</button>
+    </div>`;
+    $app.querySelectorAll<HTMLButtonElement>('[data-f]').forEach((b) => (b.onclick = () => {
+      (av as unknown as Record<string, number>)[b.dataset.f!] = +b.dataset.v!; tela();
+    }));
+    const num = document.getElementById('num') as HTMLInputElement;
+    num.oninput = () => { num.value = num.value.replace(/\D/g, '').slice(0, 2); av.n = num.value; const pv = $app.querySelector('.prev svg'); if (pv) pv.outerHTML = avatarSVG(av, 170); };
+    document.getElementById('sorte')!.onclick = () => { av = avatarPadrao(); tela(); };
+    document.getElementById('pronto')!.onclick = async (e) => {
+      (e.target as HTMLButtonElement).disabled = true;
+      gravar('jogo-avatar', JSON.stringify(av));
+      const id = Math.random().toString(36).slice(2, 12);
+      const j: Omit<Jogador, 'id'> = { nome: nome.slice(0, 20), av, pontos: 0, resp: -1, ri: -1, ganho: 0, entrouEm: Date.now() };
+      try {
+        await setDoc(jogRef(c, id), j);
+        gravar(`jogo-id-${c}`, id);
+        history.replaceState(null, '', `?sala=${c}`);
+        celular(c, id);
+      } catch (err) { console.error(err); inicio('Não deu para entrar. Tente de novo.'); }
+    };
+  };
+  tela();
 }
 
 function celular(c: string, id: string) {
@@ -244,12 +290,12 @@ function celular(c: string, id: string) {
     if (!sala || !eu) return;
     const P = banco(sala.nivel);
     const pos = ordenar(todos).findIndex((j) => j.id === id) + 1;
-    const cab = `<div class="cab"><span>${esc(eu.emoji)} ${esc(eu.nome)}</span><span class="pts">${eu.pontos} pts</span></div>`;
+    const cab = `<div class="cab"><span class="who">${avatarSVG(eu.av, 40)} ${esc(eu.nome)}</span><span class="pts">${eu.pontos} pts</span></div>`;
     const chave = `${sala.estado}-${sala.i}-${eu.ri === sala.i}`;
     if (chave === vista && sala.estado === 'pergunta') return;
     vista = chave;
     if (sala.estado === 'espera') {
-      $app.innerHTML = `<div class="cel">${cab}<div class="status"><div class="em">${esc(eu.emoji)}</div><h2>Você está na sala ${c}!</h2><p class="muted">Olhe para o telão. O jogo vai começar já já.</p><p class="muted">${todos.length} na sala</p></div></div>`;
+      $app.innerHTML = `<div class="cel">${cab}<div class="status"><div>${avatarSVG(eu.av, 150)}</div><h2>Você está na sala ${c}!</h2><p class="muted">Olhe para o telão. O jogo vai começar já já.</p><p class="muted">${todos.length} na sala</p></div></div>`;
       return;
     }
     if (sala.estado === 'fim') {
@@ -277,6 +323,12 @@ function celular(c: string, id: string) {
         try { await updateDoc(jogRef(c, id), { resp: k, ri: sala!.i, ganho, pontos: increment(ganho) }); }
         catch (e) { console.error(e); $app.querySelectorAll<HTMLButtonElement>('[data-k]').forEach((x) => (x.disabled = false)); }
       }));
+      return;
+    }
+    if (sala.estado === 'ranking') {
+      $app.innerHTML = `<div class="cel">${cab}<div class="status"><div>${avatarSVG(eu.av, 130)}</div>
+        <p class="muted" style="font-weight:800">Ranking da turma</p><div class="ganho">${pos}º lugar</div><p style="font-weight:800">${eu.pontos} pontos</p>
+        <p class="muted">Olhe o telão: a próxima pergunta vem aí!</p></div></div>`;
       return;
     }
     // resposta
