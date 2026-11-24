@@ -79,6 +79,14 @@ export function Inicio({ irPara, estudar }: { irPara(a: Aba): void; estudar(mate
         </div>
       </a>
 
+      <a className="cartao linha clicavel" href="/plantao-esportivo/dicas.html" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <span style={{ fontSize: 28 }}>🔎</span>
+        <div className="cresce">
+          <strong>Jogo das Dicas: Meninos x Meninas</strong>
+          <p className="suave">12 rodadas · 10, 5 ou 2 pontos conforme a dica</p>
+        </div>
+      </a>
+
       <a className="cartao linha clicavel" href="/jogo.html" style={{ textDecoration: 'none', color: 'inherit' }}>
         <span style={{ fontSize: 28 }}>🎮</span>
         <div className="cresce">
