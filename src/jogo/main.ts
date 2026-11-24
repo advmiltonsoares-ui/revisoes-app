@@ -65,6 +65,8 @@ function inicio(erro = '') {
         <div class="seg" id="qtd"><button type="button" data-v="10">10</button><button type="button" data-v="15" aria-pressed="true">15</button><button type="button" data-v="20">20</button></div></div>
       <button class="main" id="criar">Criar sala</button>
     </div>
+    <a class="card" href="/plantao-esportivo/dicas.html" style="text-decoration:none;color:inherit;flex-direction:row;align-items:center;gap:14px;border:3px solid var(--y)">
+      <span style="font-size:40px">🔎</span><span style="flex:1"><span class="d" style="font-size:32px;display:block">Jogo das <span class="y">Dicas</span></span><span class="muted">Meninos x Meninas · 10, 5 ou 2 pontos por dica</span></span><span class="d y" style="font-size:32px">→</span></a>
     <p class="muted" style="text-align:center;font-size:15px"><a href="/" style="color:var(--muted)">← Voltar ao Revisões App</a></p>
   </div>`;
   const seg = (id: string) => {

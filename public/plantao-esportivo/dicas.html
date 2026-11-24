@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Meninos x Meninas · Jogo das Dicas</title>
+<title>Jogo das Dicas · Meninos x Meninas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@500;700;800&display=swap">
 <style>
 :root{--bg:#0B1E14;--panel:#12301F;--line:#2A5A40;--ink:#F3EFE4;--muted:#B9CBBF;--y:#F2C230;--m:#4DA3FF;--f:#FF6FB3;--ok:#3FD394;color-scheme:dark}
@@ -73,7 +73,7 @@ function tela(){
   if(S.r>=R.length) return fim();
   const [resp,dicas]=R[S.r];
   const mostra=dicas.slice(0,S.d+1);
-  $.innerHTML=`<h1><span class="m">Meninos</span> x <span class="f">Meninas</span></h1>${placar()}
+  $.innerHTML=`<h1>Jogo das <span style="color:var(--y)">Dicas</span></h1><p style="margin:-8px 0 0;text-align:center;font-family:Anton,sans-serif;font-size:clamp(24px,3.5vw,36px)"><span style="color:var(--m)">Meninos</span> x <span style="color:var(--f)">Meninas</span></p>${placar()}
    <div class="card">
      <p class="muted" style="margin:0;text-align:center;font-weight:800">Que esporte (ou coisa do esporte) é esse?</p>
      ${S.ver?'':`<span class="vale">Vale ${VAL[S.d]} pontos agora</span>`}
@@ -96,7 +96,7 @@ function tela(){
 function fim(){
   const [m,f]=S.pt;
   const t=m>f?'👦 Os MENINOS venceram!':f>m?'👧 As MENINAS venceram!':'🤝 Empate!';
-  $.innerHTML=`<h1><span class="m">Meninos</span> x <span class="f">Meninas</span></h1>${placar()}
+  $.innerHTML=`<h1>Jogo das <span style="color:var(--y)">Dicas</span></h1><p style="margin:-8px 0 0;text-align:center;font-family:Anton,sans-serif;font-size:clamp(24px,3.5vw,36px)"><span style="color:var(--m)">Meninos</span> x <span style="color:var(--f)">Meninas</span></p>${placar()}
    <div class="card fim"><span class="muted" style="font-weight:800">Resultado final</span><div class="resp">${t}</div><button class="main" id="de">Jogar de novo</button></div>`;
   $.querySelectorAll('[data-aj]').forEach(b=>b.onclick=()=>{const [x,v]=b.dataset.aj.split(',').map(Number);S.pt[x]=Math.max(0,S.pt[x]+v);fim();});
   document.getElementById('de').onclick=novo;
