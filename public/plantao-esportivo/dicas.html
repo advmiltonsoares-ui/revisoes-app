@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meninos x Meninas · Jogo das Dicas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@500;700;800&display=swap">
+<style>
+:root{--bg:#0B1E14;--panel:#12301F;--line:#2A5A40;--ink:#F3EFE4;--muted:#B9CBBF;--y:#F2C230;--m:#4DA3FF;--f:#FF6FB3;--ok:#3FD394;color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.45 Inter,system-ui,sans-serif;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(55% 40% at 12% -8%,rgba(255,246,208,.14),transparent 70%),radial-gradient(55% 40% at 88% -8%,rgba(255,246,208,.14),transparent 70%)}
+.wrap{position:relative;max-width:1100px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:16px}
+h1,.d{font-family:Anton,Impact,sans-serif;font-weight:400;margin:0;line-height:1.05}
+h1{font-size:clamp(40px,7vw,76px);text-transform:uppercase;text-align:center}
+h1 .m{color:var(--m)}h1 .f{color:var(--f)}
+.placar{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch}
+.time{background:var(--panel);border-radius:22px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:6px;border:4px solid transparent}
+.time.m{border-color:var(--m)}.time.f{border-color:var(--f)}
+.time .nome{font-weight:800;font-size:22px}
+.time .pts{font-family:Anton,sans-serif;font-size:clamp(56px,9vw,96px);line-height:1}
+.time.m .pts{color:var(--m)}.time.f .pts{color:var(--f)}
+.ajuste{display:flex;gap:6px}
+.ajuste button{min-height:36px;padding:4px 12px;font-size:15px}
+.rodada{display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:800;color:var(--muted);padding:0 8px;text-align:center}
+.rodada .d{font-size:44px;color:var(--y)}
+.card{background:var(--panel);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.vale{align-self:center;background:var(--y);color:#13201A;font-weight:800;border-radius:999px;padding:6px 20px;font-size:20px}
+.dica{display:flex;gap:14px;align-items:flex-start;background:#0E2419;border-radius:16px;padding:16px 18px;font-size:clamp(22px,3vw,32px);font-weight:700;animation:in .35s ease-out}
+.dica .n{flex:none;font-family:Anton,sans-serif;color:var(--y);font-size:1.1em;min-width:3.4em}
+.oculta{opacity:.35;font-style:italic;font-weight:600}
+.resp{text-align:center;font-family:Anton,sans-serif;font-size:clamp(40px,7vw,72px);color:var(--y);animation:in .35s ease-out}
+button{font:inherit;cursor:pointer;border:2px solid var(--line);border-radius:16px;min-height:60px;padding:12px 18px;font-weight:800;color:var(--ink);background:#1B4230}
+button:focus-visible{outline:3px solid var(--y);outline-offset:2px}
+.acoes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bm{background:var(--m);border-color:var(--m);color:#06162B;font-size:22px}
+.bf{background:var(--f);border-color:var(--f);color:#2B0618;font-size:22px}
+.main{background:var(--y);border-color:var(--y);color:#13201A;font-size:21px}
+.full{grid-column:1/-1}
+.muted{color:var(--muted)}
+.fim{text-align:center;align-items:center}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+@media (max-width:640px){.acoes{grid-template-columns:1fr}.rodada .d{font-size:30px}}
+</style></head><body>
+<div class="wrap" id="app"></div>
+<script>
+{
+const R=[
+ ['Futsal',['Joga-se em quadra, com 5 jogadores de cada lado.','A bola é menor e mais pesada que a do campo.','É o futebol de salão.']],
+ ['Futebol',['Cada time tem 11 jogadores.','São dois tempos de 45 minutos.','Só o goleiro pega a bola com a mão, e o pênalti é a 11 metros.']],
+ ['Vôlei',['Tem uma rede no meio da quadra.','Cada time pode tocar até 3 vezes na bola.','Tem líbero, e o set vai até 25 pontos.']],
+ ['Basquete',['O time tem 24 segundos para arremessar.','São 5 jogadores de cada lado.','A cesta fica a 3,05 metros de altura.']],
+ ['Handebol',['É jogado com as mãos, com 7 de cada lado.','O pênalti se chama tiro de 7 metros.','Com a bola na mão, só pode dar 3 passos.']],
+ ['Natação',['Acontece dentro da água.','Tem os estilos costas, peito e borboleta.','Nas Olimpíadas, a piscina tem 50 metros.']],
+ ['Atletismo',['Reúne corrida, salto e arremesso.','Tem revezamento passando um bastão.','A prova mais famosa é a dos 100 metros rasos.']],
+ ['Tênis',['Joga-se com raquete, em simples ou em duplas.','A contagem é 15, 30, 40 e game.','Wimbledon é na grama e Roland Garros, no saibro.']],
+ ['Skate',['Os juízes dão nota para as manobras.','Nas Olimpíadas, tem as provas street e park.','Rayssa Leal, a Fadinha, ganhou prata em Tóquio.']],
+ ['VAR',['É uma tecnologia usada no futebol.','Usa vídeo para rever lances polêmicos.','É o árbitro de vídeo.']],
+ ['Maratona',['É uma prova de corrida.','Tem 42,195 quilômetros.','O nome vem de uma cidade da Grécia.']],
+ ['Plantão esportivo',['Pode interromper a programação da TV.','Dá a notícia do esporte na hora em que acontece.','É o tema da nossa apresentação!']],
+];
+const VAL=[10,5,2];
+const $=document.getElementById('app');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let S;
+function novo(){S={r:0,d:0,pt:[0,0],ver:false,hist:[]};tela();}
+function placar(){
+  return `<div class="placar">
+    <div class="time m"><span class="nome">👦 Meninos</span><span class="pts">${S.pt[0]}</span><div class="ajuste"><button data-aj="0,-1">−1</button><button data-aj="0,1">+1</button></div></div>
+    <div class="rodada"><span>Rodada</span><span class="d">${Math.min(S.r+1,R.length)}/${R.length}</span></div>
+    <div class="time f"><span class="nome">👧 Meninas</span><span class="pts">${S.pt[1]}</span><div class="ajuste"><button data-aj="1,-1">−1</button><button data-aj="1,1">+1</button></div></div>
+  </div>`;
+}
+function tela(){
+  if(S.r>=R.length) return fim();
+  const [resp,dicas]=R[S.r];
+  const mostra=dicas.slice(0,S.d+1);
+  $.innerHTML=`<h1><span class="m">Meninos</span> x <span class="f">Meninas</span></h1>${placar()}
+   <div class="card">
+     <p class="muted" style="margin:0;text-align:center;font-weight:800">Que esporte (ou coisa do esporte) é esse?</p>
+     ${S.ver?'':`<span class="vale">Vale ${VAL[S.d]} pontos agora</span>`}
+     ${mostra.map((t,i)=>`<div class="dica"><span class="n">Dica ${i+1}</span><span>${esc(t)}</span></div>`).join('')}
+     ${!S.ver&&S.d<2?`<div class="dica oculta"><span class="n">Dica ${S.d+2}</span><span>vale ${VAL[S.d+1]} pontos</span></div>`:''}
+     ${S.ver?`<div class="resp">${esc(resp)}</div>`:''}
+     <div class="acoes">
+      ${S.ver?`<button class="main full" id="prox">${S.r+1>=R.length?'Ver o resultado 🏆':'Próxima rodada →'}</button>`:`
+       <button class="bm" data-t="0">👦 Meninos acertaram (+${VAL[S.d]})</button>
+       <button class="bf" data-t="1">👧 Meninas acertaram (+${VAL[S.d]})</button>
+       ${S.d<2?`<button class="main full" id="dica">Mostrar a dica ${S.d+2} (vale ${VAL[S.d+1]})</button>`:`<button class="full" id="ninguem">Ninguém acertou: mostrar a resposta</button>`}`}
+     </div>
+   </div>`;
+  $.querySelectorAll('[data-aj]').forEach(b=>b.onclick=()=>{const [t,v]=b.dataset.aj.split(',').map(Number);S.pt[t]=Math.max(0,S.pt[t]+v);tela();});
+  $.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.pt[+b.dataset.t]+=VAL[S.d];S.ver=true;tela();});
+  const d=document.getElementById('dica');if(d)d.onclick=()=>{S.d++;tela();};
+  const n=document.getElementById('ninguem');if(n)n.onclick=()=>{S.ver=true;tela();};
+  const p=document.getElementById('prox');if(p)p.onclick=()=>{S.r++;S.d=0;S.ver=false;tela();scrollTo(0,0);};
+}
+function fim(){
+  const [m,f]=S.pt;
+  const t=m>f?'👦 Os MENINOS venceram!':f>m?'👧 As MENINAS venceram!':'🤝 Empate!';
+  $.innerHTML=`<h1><span class="m">Meninos</span> x <span class="f">Meninas</span></h1>${placar()}
+   <div class="card fim"><span class="muted" style="font-weight:800">Resultado final</span><div class="resp">${t}</div><button class="main" id="de">Jogar de novo</button></div>`;
+  $.querySelectorAll('[data-aj]').forEach(b=>b.onclick=()=>{const [x,v]=b.dataset.aj.split(',').map(Number);S.pt[x]=Math.max(0,S.pt[x]+v);fim();});
+  document.getElementById('de').onclick=novo;
+}
+novo();
+}
+</script></body></html>

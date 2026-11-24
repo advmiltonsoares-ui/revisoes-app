@@ -7,6 +7,10 @@
     {
       "source": "/jogo",
       "destination": "/jogo.html"
+    },
+    {
+      "source": "/dicas",
+      "destination": "/plantao-esportivo/dicas.html"
     }
   ]
 }
