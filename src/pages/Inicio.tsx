@@ -75,7 +75,7 @@ export function Inicio({ irPara, estudar }: { irPara(a: Aba): void; estudar(mate
         <span style={{ fontSize: 28 }}>⚽</span>
         <div className="cresce">
           <strong>Slides: Plantão Esportivo</strong>
-          <p className="suave">22 slides sobre o plantão e 9 esportes</p>
+          <p className="suave">10 slides sobre o plantão e 9 esportes</p>
         </div>
       </a>
 
@@ -84,14 +84,6 @@ export function Inicio({ irPara, estudar }: { irPara(a: Aba): void; estudar(mate
         <div className="cresce">
           <strong>Jogo em Sala: Quiz dos Esportes</strong>
           <p className="suave">A turma joga junta pelo celular, com o código da sala</p>
-        </div>
-      </a>
-
-      <a className="cartao linha clicavel" href="/plantao-esportivo/video.html" style={{ textDecoration: 'none', color: 'inherit' }}>
-        <span style={{ fontSize: 28 }}>🎬</span>
-        <div className="cresce">
-          <strong>Vídeo: Plantão Esportivo</strong>
-          <p className="suave">2 minutos com narração e legendas</p>
         </div>
       </a>
 
