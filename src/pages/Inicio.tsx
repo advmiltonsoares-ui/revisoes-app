@@ -71,6 +71,22 @@ export function Inicio({ irPara, estudar }: { irPara(a: Aba): void; estudar(mate
         </div>
       </a>
 
+      <a className="cartao linha clicavel" href="/plantao-esportivo/" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <span style={{ fontSize: 28 }}>⚽</span>
+        <div className="cresce">
+          <strong>Slides: Plantão Esportivo</strong>
+          <p className="suave">22 slides sobre o plantão e 9 esportes</p>
+        </div>
+      </a>
+
+      <a className="cartao linha clicavel" href="/plantao-esportivo/quiz.html" style={{ textDecoration: 'none', color: 'inherit' }}>
+        <span style={{ fontSize: 28 }}>🏆</span>
+        <div className="cresce">
+          <strong>Quiz dos Esportes (difícil)</strong>
+          <p className="suave">30 perguntas de regras, medidas e curiosidades</p>
+        </div>
+      </a>
+
       <button className="cartao linha clicavel" onClick={() => irPara('foco')}>
         <Icone nome="foco" />
         <div className="cresce">
