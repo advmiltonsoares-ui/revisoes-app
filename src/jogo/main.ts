@@ -130,7 +130,7 @@ function telao(c: string) {
         <div class="espera">
           <div class="entrar">
             <p style="font-weight:800;font-size:22px">Entre pelo celular</p>
-            <div class="url">${esc(location.host)}/jogo.html</div>
+            <div class="url">${esc(location.host + (location.pathname === '/' ? '' : location.pathname.replace(/\.html$/, '')))}</div>
             <p class="muted">Código da sala</p>
             <div class="bigcode">${c}</div>
             ${qr ? `<div class="qr"><img src="${qr}" alt="QR code para entrar na sala ${c}"></div><p class="muted" style="font-size:15px">Ou aponte a câmera para o QR code</p>` : ''}

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/", "has": [{ "type": "host", "value": "quizdoplantao.vercel.app" }], "destination": "/jogo.html" },
+    { "source": "/", "has": [{ "type": "host", "value": "plantaoesportivo.vercel.app" }], "destination": "/jogo.html" },
+    { "source": "/quiz", "destination": "/jogo.html" },
+    { "source": "/jogo", "destination": "/jogo.html" }
+  ]
+}
