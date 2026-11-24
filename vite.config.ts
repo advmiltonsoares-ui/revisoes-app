@@ -34,5 +34,9 @@ function apiLocal(): Plugin {
 export default defineConfig(({ mode }) => {
   // Disponibiliza as chaves do .env (ANTHROPIC_API_KEY, GEMINI_API_KEY...) para a função local.
   Object.assign(process.env, loadEnv(mode, process.cwd(), ''));
-  return { plugins: [react(), apiLocal()] };
+  return {
+    plugins: [react(), apiLocal()],
+    // Duas páginas: o app (index.html) e o jogo em sala (jogo.html).
+    build: { rollupOptions: { input: { main: 'index.html', jogo: 'jogo.html' } } },
+  };
 });

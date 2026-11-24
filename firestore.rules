@@ -5,5 +5,19 @@ service cloud.firestore {
     match /usuarios/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
     }
+    // Jogo em sala (jogo.html): qualquer um com o código entra e joga, sem login.
+    match /salas/{sala} {
+      allow read: if true;
+      allow create, update: if sala.matches('^[0-9]{5}$')
+        && request.resource.data.keys().hasOnly(['estado', 'nivel', 'ordem', 'i', 'inicio', 'criadaEm'])
+        && request.resource.data.estado in ['espera', 'pergunta', 'resposta', 'fim']
+        && request.resource.data.ordem.size() <= 40;
+      match /jogadores/{jog} {
+        allow read: if true;
+        allow create, update: if request.resource.data.keys().hasOnly(['nome', 'emoji', 'pontos', 'resp', 'ri', 'ganho', 'entrouEm'])
+          && request.resource.data.nome is string && request.resource.data.nome.size() <= 20
+          && request.resource.data.pontos is int && request.resource.data.pontos <= 100000;
+      }
+    }
   }
 }
