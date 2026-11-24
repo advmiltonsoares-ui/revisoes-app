@@ -125,7 +125,7 @@ function telao(c: string) {
     clearInterval(relogio);
     const P = banco(sala.nivel);
     const n = sala.ordem.length;
-    const topo = `<div class="topo"><h2>Quiz dos <span class="y">Esportes</span></h2><div class="cod">SALA ${c}</div></div>`;
+    const topo = `<div class="topo"><h2>Quiz dos <span class="y">Esportes</span></h2><div class="cod"><span class="codurl">${esc(/^(quizdoplantao|plantaoesportivo)\./.test(location.hostname) ? location.host : location.host + '/quiz')}</span><span class="codlab">Código</span>${c}</div></div>`;
     if (sala.estado === 'espera') {
       $app.innerHTML = `<div class="tela">${topo}
         <div class="espera">
@@ -249,6 +249,7 @@ function criarPersonagem(c: string, nome: string) {
   const tela = () => {
     $app.innerHTML = `<div class="centro" style="max-width:640px">
       <div class="aviso" role="status">⏱️ Você tem <b>1 minuto</b> para montar o seu personagem. Depois disso, você entra com ele do jeito que estiver. <span class="rel" id="rel">${restaTxt()}</span></div>
+      <div class="salabadge">Sala <b>${c}</b></div>
       <h2 style="text-align:center">Crie o seu <span class="y">personagem</span></h2>
       <div class="prev">${avatarSVG(av, 170)}<p class="d" style="font-size:30px">${esc(nome)}</p></div>
       <div class="card" style="gap:12px">
@@ -303,7 +304,7 @@ function celular(c: string, id: string) {
     if (!sala || !eu) return;
     const P = banco(sala.nivel);
     const pos = ordenar(todos).findIndex((j) => j.id === id) + 1;
-    const cab = `<div class="cab"><span class="who">${avatarSVG(eu.av, 40)} ${esc(eu.nome)}</span><span class="pts">${eu.pontos} pts</span></div>`;
+    const cab = `<div class="cab"><span class="who">${avatarSVG(eu.av, 40)} ${esc(eu.nome)}</span><span class="salamini">Sala ${c}</span><span class="pts">${eu.pontos} pts</span></div>`;
     const chave = `${sala.estado}-${sala.i}-${eu.ri === sala.i}`;
     if (chave === vista && sala.estado === 'pergunta') return;
     vista = chave;

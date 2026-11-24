@@ -104,3 +104,10 @@ label{display:flex;flex-direction:column;gap:6px;font-weight:700}
 .cel .cab .who svg{width:40px;height:40px}
 .aviso{background:#3A3410;border:2px solid var(--y);border-radius:16px;padding:12px 16px;font-size:16px;line-height:1.4}
 .aviso .rel{display:inline-block;margin-left:6px;font-family:Anton,sans-serif;font-size:24px;color:var(--y);font-variant-numeric:tabular-nums}
+.topo .cod{display:flex;align-items:center;gap:14px;font-size:44px;padding:8px 20px}
+.codurl{font-family:Inter,sans-serif;font-weight:800;font-size:20px;color:var(--ink)}
+.codlab{font-family:Inter,sans-serif;font-weight:700;font-size:16px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.salabadge{align-self:center;background:#050D08;border:3px solid #1E3A28;border-radius:999px;padding:6px 20px;font-weight:700;color:var(--muted)}
+.salabadge b{font-family:Anton,sans-serif;font-weight:400;font-size:30px;color:var(--y);letter-spacing:.12em;margin-left:6px}
+.salamini{font-family:Anton,sans-serif;color:var(--muted);font-size:18px;letter-spacing:.08em}
+@media (max-width:820px){.topo .cod{font-size:30px}.codurl{font-size:15px}}
