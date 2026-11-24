@@ -61,23 +61,24 @@ const mix=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.ran
 let best=null;try{best=localStorage.getItem('quiz-esportes-recorde')}catch(e){}
 let S;
 function inicio(){
-  $.innerHTML=`<h1>Quiz dos <span>Esportes</span></h1><span class="tag">Nível difícil</span>
-  <p class="muted" style="margin:0">12 perguntas difíceis sobre regras, medidas e curiosidades de futsal, futebol, vôlei, basquete, handebol, natação, atletismo, tênis, skate e do plantão esportivo. Cada acerto vale 10 pontos.</p>
+  $.innerHTML=`<h1>Meninos <span>x</span> Meninas</h1><span class="tag">Quiz dos Esportes · nível difícil</span>
+  <p class="muted" style="margin:0">12 perguntas, uma vez para cada time: 6 para os meninos e 6 para as meninas. O time da vez responde; cada acerto vale 10 pontos. Ganha quem fizer mais pontos!</p>
   <div class="start">${['futsal','basquete','volei','natacao','handebol','skate'].map(k=>`<div class="art">${IMG[k]}</div>`).join('')}</div>
   ${best?`<p class="muted" style="margin:0;text-align:center">Seu recorde: <b style="color:var(--y)">${esc(best)}%</b></p>`:''}
-  <button class="main" id="go">Começar o quiz</button>`;
+  <button class="main" id="go">Começar: Meninos x Meninas</button>`;
   document.getElementById('go').onclick=comecar;
 }
 function comecar(){
-  S={i:0,pts:0,ok:0,res:[],l:mix(Q).slice(0,12).map(q=>{const c={...q};if(q.t==='mc'){const r=q.o[q.a];c.os=mix(q.o);c.ai=c.os.indexOf(r)}if(q.t==='match'){c.L=mix(q.pairs.map((p,i)=>({t:p[0],i})));c.R=mix(q.pairs.map((p,i)=>({t:p[1],i})))}return c})};
+  S={i:0,pts:0,ok:0,res:[],tm:[0,0],l:mix(Q).slice(0,12).map(q=>{const c={...q};if(q.t==='mc'){const r=q.o[q.a];c.os=mix(q.o);c.ai=c.os.indexOf(r)}if(q.t==='match'){c.L=mix(q.pairs.map((p,i)=>({t:p[0],i})));c.R=mix(q.pairs.map((p,i)=>({t:p[1],i})))}return c})};
   pergunta();
 }
 function placar(){
-  const n=S.l.length;
-  return `<div class="board"><div class="cell"><div class="led g">${S.ok}</div><small>acertos</small></div>
-  <div class="cell"><div class="led">${S.pts}</div><small>pontos</small></div>
-  <div class="cell"><div class="led r">${S.res.length-S.ok}</div><small>erros</small></div></div>
-  <div class="bar" aria-label="progresso"><span style="width:${S.res.length/n*100}%"></span></div>`;
+  const n=S.l.length,vez=S.i%2;
+  return `<div class="board"><div class="cell" style="${vez===0?'outline:3px solid #4DA3FF;border-radius:12px':''}"><div class="led" style="color:#4DA3FF;text-shadow:0 0 14px rgba(77,163,255,.5)">${S.tm[0]}</div><small>👦 Meninos</small></div>
+  <div class="cell"><div class="led" style="font-size:30px">${Math.min(S.i+1,n)}/${n}</div><small>pergunta</small></div>
+  <div class="cell" style="${vez===1?'outline:3px solid #FF6FB3;border-radius:12px':''}"><div class="led" style="color:#FF6FB3;text-shadow:0 0 14px rgba(255,111,179,.5)">${S.tm[1]}</div><small>👧 Meninas</small></div></div>
+  <div class="bar" aria-label="progresso"><span style="width:${S.res.length/n*100}%"></span></div>
+  <p style="margin:0;text-align:center;font-family:Anton,sans-serif;font-size:30px;color:${vez===0?'#4DA3FF':'#FF6FB3'}">Vez ${vez===0?'dos 👦 MENINOS':'das 👧 MENINAS'}</p>`;
 }
 function pergunta(){
   const q=S.l[S.i];let corpo='';
@@ -96,25 +97,22 @@ function pergunta(){
       else{err++;[l,b].forEach(x=>x.classList.add('err'));setTimeout(()=>[l,b].forEach(x=>x.classList.remove('err','sel')),400)}L=null});}
 }
 function responder(q,ok,certo,err){
-  if(ok){S.ok++;S.pts+=10}S.res.push({q,ok});
+  if(ok){S.ok++;S.pts+=10;S.tm[S.i%2]+=10}S.res.push({q,ok});
   const ult=S.i+1>=S.l.length;
   const extra=!ok&&certo!=null?`<span>Resposta certa: <b style="font-family:inherit;font-size:inherit">${esc(certo)}</b></span>`:(!ok&&err?`<span>Você errou ${err} ${err>1?'ligações':'ligação'} antes de completar. Para ganhar os pontos, é preciso ligar tudo sem errar.</span>`:'');
-  document.getElementById('fb').innerHTML=`<div class="fb ${ok?'ok':'no'}"><b>${ok?'GOOOL! +10 pontos':'Na trave!'}</b>${extra}<span>${esc(q.e)}</span></div>
+  document.getElementById('fb').innerHTML=`<div class="fb ${ok?'ok':'no'}"><b>${ok?'GOOOL! +10 para '+(S.i%2===0?'os meninos':'as meninas'):'Na trave!'}</b>${extra}<span>${esc(q.e)}</span></div>
    <button class="main" id="nx" style="margin-top:12px">${ult?'Ver o placar final':'Próxima pergunta'}</button>`;
-  const b=$.querySelectorAll('.board .led');b[0].textContent=S.ok;b[1].textContent=S.pts;b[2].textContent=S.res.length-S.ok;
+  const b=$.querySelectorAll('.board .led');b[0].textContent=S.tm[0];b[2].textContent=S.tm[1];
   $.querySelector('.bar span').style.width=(S.res.length/S.l.length*100)+'%';
   const nx=document.getElementById('nx');nx.onclick=()=>{if(ult)final();else{S.i++;pergunta();scrollTo(0,0)}};
   nx.scrollIntoView({block:'nearest'});
 }
 function final(){
-  const n=S.l.length,pct=Math.round(S.ok/n*100),nota=(S.ok/n*10).toFixed(1).replace('.',',');
-  try{if(best===null||pct>+best){localStorage.setItem('quiz-esportes-recorde',pct);best=String(pct)}}catch(e){}
-  const tags={};S.res.forEach(r=>{if(!r.ok)tags[r.q.tag]=(tags[r.q.tag]||0)+1});
-  const msg=pct>=90?'Campeão! Você é fera nas regras dos esportes.':pct>=70?'Muito bem! Quase lá.':pct>=50?'Bom jogo! Revise os esportes abaixo.':'Vale um novo treino: revise os slides e tente de novo.';
-  $.innerHTML=`<div class="card res"><span class="tag" style="align-self:center">Placar final</span><div class="big">${pct}%</div><p class="q">${msg}</p>
-   <div class="stats"><div class="stat"><div class="d" style="color:var(--ok)">${S.ok}</div><span>acertos</span></div><div class="stat"><div class="d" style="color:var(--bad)">${n-S.ok}</div><span>erros</span></div>
-   <div class="stat"><div class="d">${nota}</div><span>nota de 0 a 10</span></div><div class="stat"><div class="d" style="color:var(--y)">${S.pts}</div><span>pontos de ${n*10}</span></div></div>
-   ${Object.keys(tags).length?`<p style="margin:0;font-weight:800;align-self:flex-start">Para revisar:</p><ul class="tips">${Object.entries(tags).map(([t,c])=>`<li>${esc(t)} <span class="muted">(${c} ${c>1?'erros':'erro'})</span></li>`).join('')}</ul>`:'<p class="muted" style="margin:0">Nenhum erro!</p>'}
+  const [m,f]=S.tm;
+  const titulo=m>f?'👦 Os MENINOS venceram!':f>m?'👧 As MENINAS venceram!':'🤝 Empate!';
+  $.innerHTML=`<div class="card res"><span class="tag" style="align-self:center">Placar final</span>
+   <p class="q" style="font-family:Anton,sans-serif;font-size:clamp(36px,8vw,56px);font-weight:400">${titulo}</p>
+   <div class="stats"><div class="stat"><div class="d" style="color:#4DA3FF">${m}</div><span>👦 Meninos</span></div><div class="stat"><div class="d" style="color:#FF6FB3">${f}</div><span>👧 Meninas</span></div></div>
    <button class="main" id="again">Jogar de novo</button><button class="ghost" id="home">Início</button></div>`;
   document.getElementById('again').onclick=()=>{comecar();scrollTo(0,0)};document.getElementById('home').onclick=inicio;scrollTo(0,0);
 }
